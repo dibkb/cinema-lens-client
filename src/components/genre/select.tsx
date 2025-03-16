@@ -5,13 +5,14 @@ import { genres } from "@/data/genre";
 import { cn } from "@/lib/utils";
 import { AccentColor, getAccentColors } from "@/lib/colors";
 import "@/styles/scrollbar.css";
+import { useQueryState } from "nuqs";
 
 interface SelectGenreProps {
   accentColor?: AccentColor;
 }
 
 const SelectGenre = ({ accentColor = "cyan" }: SelectGenreProps) => {
-  const [input, setInput] = useState("");
+  const [input, setInput] = useQueryState("genre", { defaultValue: "" });
   const [selected, setSelected] = useState<number[]>([]);
   const [isFocused, setIsFocused] = useState(false);
 
