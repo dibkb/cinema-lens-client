@@ -3,8 +3,11 @@ import Summary from "./components/tabs/summary";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "./components/ui/tabs";
 import LanguageIcon from "./icons/language";
 import Pencil from "./icons/pencil";
-
+import { useQueryState } from "nuqs";
 function App() {
+  const [type, setType] = useQueryState("type", {
+    defaultValue: "natural-language",
+  });
   return (
     <main className="flex flex-col items-center justify-center h-screen">
       <section>
@@ -17,8 +20,11 @@ function App() {
           </p>
         </div>
         <Tabs
-          defaultValue="natural-language"
+          defaultValue={type}
           className="mt-12 w-full flex justify-center items-center"
+          onValueChange={(value) => {
+            setType(value);
+          }}
         >
           <TabsList className="bg-stone-50 text-xs">
             <TabsTrigger
