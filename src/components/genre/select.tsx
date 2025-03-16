@@ -5,7 +5,7 @@ import { genres } from "@/data/genre";
 import { cn } from "@/lib/utils";
 import { AccentColor, getAccentColors } from "@/lib/colors";
 import "@/styles/scrollbar.css";
-import { useQueryState } from "nuqs";
+import { useQueryState, parseAsInteger, parseAsArrayOf } from "nuqs";
 
 interface SelectGenreProps {
   accentColor?: AccentColor;
@@ -13,10 +13,13 @@ interface SelectGenreProps {
 
 const SelectGenre = ({ accentColor = "cyan" }: SelectGenreProps) => {
   const [input, setInput] = useQueryState("genre", { defaultValue: "" });
-  const [selected, setSelected] = useState<number[]>([]);
+  const [selected, setSelected] = useQueryState(
+    "selected",
+    parseAsArrayOf(parseAsInteger)
+  );
   const [isFocused, setIsFocused] = useState(false);
 
-  const colors = getAccentColors(accentColor);
+  const colors = useMemo(() => getAccentColors(accentColor), [accentColor]);
 
   const filteredGenres = useMemo(() => {
     if (!input.trim()) return genres;
@@ -26,12 +29,24 @@ const SelectGenre = ({ accentColor = "cyan" }: SelectGenreProps) => {
     );
   }, [input]);
 
-  const onSelectHandler = useCallback((id: number) => {
-    setSelected((prev) => [...prev, id]);
-  }, []);
-  const onRemoveHandler = useCallback((id: number) => {
-    setSelected((prev) => prev.filter((item) => item !== id));
-  }, []);
+  const onSelectHandler = useCallback(
+    (id: number) => {
+      setSelected((prev) => {
+        if (!prev) return [id];
+        return [...prev, id];
+      });
+    },
+    [setSelected]
+  );
+  const onRemoveHandler = useCallback(
+    (id: number) => {
+      setSelected((prev) => {
+        if (!prev) return null;
+        return prev.filter((item) => item !== id);
+      });
+    },
+    [setSelected]
+  );
   const onClickHandler = useCallback(
     (id: number, event: React.MouseEvent<HTMLDivElement>) => {
       // Prevent the click from causing blur
@@ -39,7 +54,7 @@ const SelectGenre = ({ accentColor = "cyan" }: SelectGenreProps) => {
         event.preventDefault();
         event.stopPropagation();
       }
-      if (selected.includes(id)) {
+      if (selected?.includes(id)) {
         onRemoveHandler(id);
       } else {
         onSelectHandler(id);
@@ -47,7 +62,7 @@ const SelectGenre = ({ accentColor = "cyan" }: SelectGenreProps) => {
     },
     [onRemoveHandler, onSelectHandler, selected]
   );
-  const previewItem = genres.filter((item) => selected.includes(item.id));
+  const previewItem = genres.filter((item) => selected?.includes(item.id));
   const preview = previewItem.length > 0 && (
     <div className="flex items-center gap-1.5">
       <p
@@ -64,16 +79,20 @@ const SelectGenre = ({ accentColor = "cyan" }: SelectGenreProps) => {
       </p>
     </div>
   );
+  const containerClass = useMemo(() => {
+    return cn(
+      "flex items-center gap-2 border border-stone-300 rounded-xl px-2.5 py-1.5",
+      "text-sm min-w-[300px] max-w-[360px]",
+      "transition-colors duration-150",
+      `focus-within:bg-white relative`,
+      "h-9",
+      `hover:border-${accentColor}-500 focus-within:border-${accentColor}-500`,
+      selected && selected?.length > 0 && "bg-white"
+    );
+  }, [accentColor, selected]);
   return (
     <div
-      className={cn(
-        "flex items-center gap-2 border border-stone-300 rounded-xl px-2.5 py-1.5",
-        "text-sm min-w-[240px] max-w-[320px]",
-        "transition-colors duration-150",
-        `hover:border-${accentColor}-500 focus-within:border-${accentColor}-500 focus-within:bg-white relative`,
-        "h-9",
-        selected.length > 0 && "bg-white"
-      )}
+      className={containerClass}
       tabIndex={0}
       onFocus={() => setIsFocused(true)}
       onBlur={(e) => {
@@ -86,7 +105,7 @@ const SelectGenre = ({ accentColor = "cyan" }: SelectGenreProps) => {
       <Magnifier className="flex-shrink-0 text-gray-500" />
 
       <div className="flex-1 relative">
-        {selected.length > 0 && !isFocused ? (
+        {selected && selected?.length > 0 && !isFocused ? (
           <div className="flex items-center">{preview}</div>
         ) : (
           <input
@@ -116,13 +135,13 @@ const SelectGenre = ({ accentColor = "cyan" }: SelectGenreProps) => {
                 "cursor-pointer transition-colors",
                 colors.hover,
                 "rounded-md mx-1 my-[1px] justify-between",
-                selected.includes(item.id) &&
+                selected?.includes(item.id) &&
                   cn(colors.dark, "bg-opacity-50", colors.light)
               )}
               onClick={(e) => onClickHandler(item.id, e)}
             >
               <p className="truncate">{item.name}</p>
-              {selected.includes(item.id) && (
+              {selected?.includes(item.id) && (
                 <span
                   className={cn(
                     "w-2 h-2 rounded-full flex-shrink-0",

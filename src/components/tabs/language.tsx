@@ -4,7 +4,10 @@ import TabsLayout from "./layout";
 const Language = () => {
   return (
     <TabsLayout className="">
-      <SelectGenre accentColor="blue" />
+      <div className="flex items-center justify-center gap-2">
+        <SelectGenre accentColor="blue" />
+        <SelectGenre accentColor="blue" />
+      </div>
     </TabsLayout>
   );
 };
