@@ -1,24 +1,44 @@
-import { useQueryState } from "nuqs";
+import Letterboxd from "@/icons/letterboxd";
+import Reddit from "@/icons/reddit";
+import UpArrow from "@/icons/up-arrow";
+import { cn } from "@/lib/utils";
+import { parseAsBoolean, useQueryState } from "nuqs";
 import { useMemo } from "react";
 
 const SearchBox = ({ type }: { type?: string }) => {
   const [query, setQuery] = useQueryState("query", {
     defaultValue: "",
   });
+  const [reddit, setReddit] = useQueryState(
+    "reddit",
+    parseAsBoolean.withDefault(false)
+  );
+  const [letterboxd, setLetterboxd] = useQueryState(
+    "letterboxd",
+    parseAsBoolean.withDefault(false)
+  );
 
-  const placeholder = useMemo(() => {
+  const copy = useMemo(() => {
     if (type === "natural-language") {
-      return "Type your movie query here… e.g., 'movies directed by Steven Spielberg in the 1980s'";
+      return {
+        placeholder:
+          "Type your movie query here… e.g., 'movies directed by Steven Spielberg in the 1980s'",
+        color: "blue",
+      };
     } else if (type === "plot-summaries") {
-      return "Type your movie plot here… e.g., 'movies where the protagonist is a detective and the antagonist is a serial killer'";
+      return {
+        placeholder:
+          "Type your movie plot here… e.g., 'movies where there is a murder mystery and there is a mole in the police force'",
+        color: "cyan",
+      };
     }
   }, [type]);
 
   return (
     <div className="bg-white rounded-lg w-[900px] mt-9 px-4 py-2 flex flex-col">
       <textarea
-        placeholder={placeholder}
-        className="w-full outline-none resize-none overflow-y-hidden min-h-[2rem] font-medium"
+        placeholder={copy?.placeholder}
+        className="w-full outline-none resize-none overflow-y-hidden min-h-[4rem] font-medium"
         style={{ height: "auto" }}
         onInput={(e) => {
           const target = e.target as HTMLTextAreaElement;
@@ -28,7 +48,43 @@ const SearchBox = ({ type }: { type?: string }) => {
         value={query}
         onChange={(e) => setQuery(e.target.value)}
       />
-      <main className="h-12"></main>
+      <main className="h-12 flex items-center justify-between">
+        <div className="flex items-center gap-2 text-xs">
+          {type === "natural-language" && (
+            <>
+              <span
+                onClick={() => setReddit((prev) => !prev)}
+                className={cn(
+                  "text-gray-500 font-medium border border-gray-200 rounded-full px-2 flex items-center gap-1 cursor-pointer hover:bg-gray-50 transition-colors",
+                  reddit && "bg-blue-50 border-blue-500 text-blue-500"
+                )}
+              >
+                <Reddit /> Search Reddit
+              </span>
+              <span
+                onClick={() => setLetterboxd((prev) => !prev)}
+                className={cn(
+                  "text-gray-500 font-medium border border-gray-200 rounded-full px-2 flex items-center gap-1 cursor-pointer hover:bg-gray-50 transition-colors",
+                  letterboxd && "bg-blue-50 border-blue-500 text-blue-500"
+                )}
+              >
+                <Letterboxd /> Search Letterboxd
+              </span>
+            </>
+          )}
+        </div>
+
+        <button
+          className={cn(
+            "w-9 h-9 rounded-full flex items-center justify-center",
+            "transition-colors cursor-pointer",
+            copy?.color === "blue" && "bg-blue-600 hover:bg-blue-700",
+            copy?.color === "cyan" && "bg-cyan-600 hover:bg-cyan-700"
+          )}
+        >
+          <UpArrow className="text-white" />
+        </button>
+      </main>
     </div>
   );
 };
