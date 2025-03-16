@@ -1,3 +1,4 @@
+import DateRange from "../date/range";
 import SelectGenre from "../genre/select";
 import TabsLayout from "./layout";
 
@@ -6,7 +7,7 @@ const Language = () => {
     <TabsLayout className="">
       <div className="flex items-center justify-center gap-2">
         <SelectGenre accentColor="blue" />
-        <SelectGenre accentColor="blue" />
+        <DateRange accentColor="blue" />
       </div>
     </TabsLayout>
   );

@@ -1,3 +1,4 @@
+import SearchBox from "./components/search/search-box";
 import Language from "./components/tabs/language";
 import Summary from "./components/tabs/summary";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "./components/ui/tabs";
@@ -10,7 +11,7 @@ function App() {
   });
   return (
     <main className="flex flex-col items-center justify-center h-screen">
-      <section>
+      <section className="w-[900px]">
         <div className="flex flex-col gap-4 items-center">
           <h2 className="text-5xl libre-baskerville-regular">
             Discover Your Next Favorite Movie
@@ -50,6 +51,7 @@ function App() {
           </TabsContent>
         </Tabs>
       </section>
+      <SearchBox type={type} />
     </main>
   );
 }
