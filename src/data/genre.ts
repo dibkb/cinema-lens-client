@@ -1,70 +1,70 @@
 export const genres = [
   {
     id: 1,
-    name: "Drama 🎭",
+    name: "🎭 Drama",
   },
   {
     id: 2,
-    name: "War 🪖",
+    name: "🪖 War",
   },
   {
     id: 3,
-    name: "Crime 🕵️‍♂️",
+    name: "🕵️‍♂️ Crime",
   },
   {
     id: 4,
-    name: "Animation 🎨",
+    name: "🎨 Animation",
   },
   {
     id: 5,
-    name: "Comedy 🤣",
+    name: "🤣 Comedy",
   },
   {
     id: 6,
-    name: "Romance 💖",
+    name: "💖 Romance",
   },
   {
     id: 7,
-    name: "History 📜",
+    name: "📜 History",
   },
   {
     id: 8,
-    name: "Family 👨‍👩‍👧‍👦",
+    name: "👨‍👩‍👧‍👦 Family",
   },
   {
     id: 9,
-    name: "Sci-Fi 👽",
+    name: "👽 Sci-Fi",
   },
   {
     id: 10,
-    name: "Documentary 📹",
+    name: "📹 Documentary",
   },
   {
     id: 11,
-    name: "Music 🎶",
+    name: "🎶 Music",
   },
   {
     id: 12,
-    name: "TV Movie 📺",
+    name: "📺 TV Movie",
   },
   {
     id: 13,
-    name: "Children 🧒",
+    name: "🧒 Children",
   },
   {
     id: 14,
-    name: "IMAX 🍿",
+    name: "🍿 IMAX",
   },
   {
     id: 15,
-    name: "Western 🤠",
+    name: "🤠 Western",
   },
   {
     id: 16,
-    name: "Musical 🎹",
+    name: "🎹 Musical",
   },
   {
     id: 17,
-    name: "Film Noir 🕵️‍♀️",
+    name: "🕵️‍♀️ Film Noir",
   },
 ];
