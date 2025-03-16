@@ -33,18 +33,25 @@ const SelectGenre = () => {
   );
   const previewItem = genres.filter((item) => selected.includes(item.id));
   const preview = previewItem.length > 0 && (
-    <div>
-      <p className="px-2 rounded-xl text-xs text-blue-500 bg-blue-50 font-medium">
-        {previewItem[0].name.split(" ")[1]}
-        {previewItem.length - 1 > 0 && (
-          <span className="text-xs"> +{previewItem.length - 1}</span>
+    <div className="flex items-center gap-1.5">
+      <p className="px-2 py-0.5 rounded-md text-xs text-blue-600 bg-blue-50 font-medium">
+        {previewItem[0].name}
+        {previewItem.length > 1 && (
+          <span className="ml-1 text-blue-500">+{previewItem.length - 1}</span>
         )}
       </p>
     </div>
   );
   return (
     <div
-      className="flex items-center gap-2 border border-stone-300 rounded-xl px-2 py-1 text-sm w-fit hover:border-blue-500 focus-within:border-blue-500 relative focus-within:bg-white h-8"
+      className={cn(
+        "flex items-center gap-2 border border-stone-300 rounded-xl px-2.5 py-1.5",
+        "text-sm min-w-[240px] max-w-[320px]",
+        "transition-colors duration-150",
+        "hover:border-blue-500 focus-within:border-blue-500 focus-within:bg-white relative",
+        "h-9",
+        selected.length > 0 && "bg-white"
+      )}
       tabIndex={0}
       onFocus={() => setIsFocused(true)}
       onBlur={(e) => {
@@ -54,45 +61,49 @@ const SelectGenre = () => {
         }
       }}
     >
-      <Magnifier />
-      {selected.length > 0 && !isFocused ? (
-        <div className="flex items-center gap-2 w-44">{preview}</div>
-      ) : (
-        <input
-          type="text"
-          placeholder="Select genre"
-          className="outline-none font-medium w-44"
-          value={input}
-          onChange={({ target }) => setInput(target.value)}
-        />
-      )}
-      <div className="absolute right-2">
-        {input && (
-          <Xcircle
-            className="text-stone-400 hover:text-stone-600 cursor-pointer"
-            onClick={() => setInput("")}
+      <Magnifier className="flex-shrink-0 text-gray-500" />
+
+      <div className="flex-1 relative">
+        {selected.length > 0 && !isFocused ? (
+          <div className="flex items-center">{preview}</div>
+        ) : (
+          <input
+            type="text"
+            placeholder="Select genre"
+            className="w-full outline-none font-medium placeholder:text-gray-500"
+            value={input}
+            onChange={({ target }) => setInput(target.value)}
           />
         )}
       </div>
+
+      {input && (
+        <Xcircle
+          className="flex-shrink-0 text-gray-400 hover:text-gray-600 cursor-pointer transition-colors"
+          onClick={() => setInput("")}
+        />
+      )}
+
       {isFocused && (
-        <main className="absolute top-9 right-0 border bg-white border-stone-300 rounded-xl w-full py-1 overflow-y-auto max-h-[300px] scrollbar-hide">
+        <main className="absolute top-full mt-1 left-0 right-0 border bg-white border-stone-300 rounded-xl py-1 overflow-y-auto max-h-[300px] scrollbar-hide shadow-lg">
           {genres.map((item) => (
             <div
               key={item.id}
               className={cn(
-                "flex items-center gap-2 hover:bg-blue-50 hover:text-blue-600 cursor-pointer px-2 py-[1px] rounded-md mx-1 my-[1px] justify-between",
-                selected.includes(item.id) && " text-blue-600"
+                "flex items-center gap-2 px-3 py-1.5",
+                "cursor-pointer transition-colors",
+                "hover:bg-blue-50 hover:text-blue-600",
+                "rounded-md mx-1 my-[1px] justify-between",
+                selected.includes(item.id) && "text-blue-600 bg-blue-50/50"
               )}
-              onClick={(e) => {
-                onClickHandler(item.id, e);
-              }}
+              onClick={(e) => onClickHandler(item.id, e)}
             >
-              <p>{item.name}</p>
+              <p className="truncate">{item.name}</p>
               {selected.includes(item.id) && (
                 <span
-                  className=" w-2 h-2 bg-blue-500 rounded-full"
+                  className="w-2 h-2 bg-blue-500 rounded-full flex-shrink-0"
                   onClick={() => onRemoveHandler(item.id)}
-                ></span>
+                />
               )}
             </div>
           ))}

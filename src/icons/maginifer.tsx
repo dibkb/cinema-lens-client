@@ -1,10 +1,12 @@
-const Magnifier = () => {
+import { cn } from "@/lib/utils";
+
+const Magnifier = ({ className }: { className?: string }) => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 20 20"
       fill="currentColor"
-      className="size-4"
+      className={cn("size-4", className)}
     >
       <path
         fillRule="evenodd"
