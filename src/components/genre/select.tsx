@@ -31,9 +31,20 @@ const SelectGenre = () => {
     },
     [onRemoveHandler, onSelectHandler, selected]
   );
+  const previewItem = genres.filter((item) => selected.includes(item.id));
+  const preview = previewItem.length > 0 && (
+    <div>
+      <p className="px-2 rounded-xl text-xs text-blue-500 bg-blue-50 font-medium">
+        {previewItem[0].name.split(" ")[1]}
+        {previewItem.length - 1 > 0 && (
+          <span className="text-xs"> +{previewItem.length - 1}</span>
+        )}
+      </p>
+    </div>
+  );
   return (
     <div
-      className="flex items-center gap-2 border border-stone-300 rounded-xl px-2 py-1 text-sm w-fit hover:border-blue-500 focus-within:border-blue-500 relative focus-within:bg-white"
+      className="flex items-center gap-2 border border-stone-300 rounded-xl px-2 py-1 text-sm w-fit hover:border-blue-500 focus-within:border-blue-500 relative focus-within:bg-white h-8"
       tabIndex={0}
       onFocus={() => setIsFocused(true)}
       onBlur={(e) => {
@@ -44,13 +55,17 @@ const SelectGenre = () => {
       }}
     >
       <Magnifier />
-      <input
-        type="text"
-        placeholder="Select genre"
-        className="outline-none font-medium"
-        value={input}
-        onChange={({ target }) => setInput(target.value)}
-      />
+      {selected.length > 0 && !isFocused ? (
+        <div className="flex items-center gap-2 w-44">{preview}</div>
+      ) : (
+        <input
+          type="text"
+          placeholder="Select genre"
+          className="outline-none font-medium w-44"
+          value={input}
+          onChange={({ target }) => setInput(target.value)}
+        />
+      )}
       <div className="absolute right-2">
         {input && (
           <Xcircle
