@@ -1,4 +1,4 @@
-import { useCallback, useState } from "react";
+import { useCallback, useState, useMemo } from "react";
 import Magnifier from "../../icons/maginifer";
 import Xcircle from "@/icons/x-circle";
 import { genres } from "@/data/genre";
@@ -9,6 +9,14 @@ const SelectGenre = () => {
   const [input, setInput] = useState("");
   const [selected, setSelected] = useState<number[]>([]);
   const [isFocused, setIsFocused] = useState(false);
+
+  const filteredGenres = useMemo(() => {
+    if (!input.trim()) return genres;
+    const searchTerm = input.toLowerCase();
+    return genres.filter((genre) =>
+      genre.name.toLowerCase().includes(searchTerm)
+    );
+  }, [input]);
 
   const onSelectHandler = useCallback((id: number) => {
     setSelected((prev) => [...prev, id]);
@@ -84,9 +92,9 @@ const SelectGenre = () => {
         />
       )}
 
-      {isFocused && (
+      {isFocused && filteredGenres.length > 0 && (
         <main className="absolute top-full mt-1 left-0 right-0 border bg-white border-stone-300 rounded-xl py-1 overflow-y-auto max-h-[300px] scrollbar-hide shadow-lg">
-          {genres.map((item) => (
+          {filteredGenres.map((item) => (
             <div
               key={item.id}
               className={cn(
