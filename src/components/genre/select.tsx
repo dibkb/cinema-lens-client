@@ -3,12 +3,19 @@ import Magnifier from "../../icons/maginifer";
 import Xcircle from "@/icons/x-circle";
 import { genres } from "@/data/genre";
 import { cn } from "@/lib/utils";
+import { AccentColor, getAccentColors } from "@/lib/colors";
 import "@/styles/scrollbar.css";
 
-const SelectGenre = () => {
+interface SelectGenreProps {
+  accentColor?: AccentColor;
+}
+
+const SelectGenre = ({ accentColor = "cyan" }: SelectGenreProps) => {
   const [input, setInput] = useState("");
   const [selected, setSelected] = useState<number[]>([]);
   const [isFocused, setIsFocused] = useState(false);
+
+  const colors = getAccentColors(accentColor);
 
   const filteredGenres = useMemo(() => {
     if (!input.trim()) return genres;
@@ -42,10 +49,16 @@ const SelectGenre = () => {
   const previewItem = genres.filter((item) => selected.includes(item.id));
   const preview = previewItem.length > 0 && (
     <div className="flex items-center gap-1.5">
-      <p className="px-2 py-0.5 rounded-md text-xs text-blue-600 bg-blue-50 font-medium">
+      <p
+        className={cn(
+          "px-2 py-0.5 rounded-md text-xs font-medium",
+          colors.dark,
+          colors.light
+        )}
+      >
         {previewItem[0].name}
         {previewItem.length > 1 && (
-          <span className="ml-1 text-blue-500">+{previewItem.length - 1}</span>
+          <span className="ml-1">{`+${previewItem.length - 1}`}</span>
         )}
       </p>
     </div>
@@ -56,7 +69,7 @@ const SelectGenre = () => {
         "flex items-center gap-2 border border-stone-300 rounded-xl px-2.5 py-1.5",
         "text-sm min-w-[240px] max-w-[320px]",
         "transition-colors duration-150",
-        "hover:border-blue-500 focus-within:border-blue-500 focus-within:bg-white relative",
+        `hover:border-${accentColor}-500 focus-within:border-${accentColor}-500 focus-within:bg-white relative`,
         "h-9",
         selected.length > 0 && "bg-white"
       )}
@@ -100,16 +113,20 @@ const SelectGenre = () => {
               className={cn(
                 "flex items-center gap-2 px-3 py-1.5",
                 "cursor-pointer transition-colors",
-                "hover:bg-blue-50 hover:text-blue-600",
+                colors.hover,
                 "rounded-md mx-1 my-[1px] justify-between",
-                selected.includes(item.id) && "text-blue-600 bg-blue-50/50"
+                selected.includes(item.id) &&
+                  cn(colors.dark, "bg-opacity-50", colors.light)
               )}
               onClick={(e) => onClickHandler(item.id, e)}
             >
               <p className="truncate">{item.name}</p>
               {selected.includes(item.id) && (
                 <span
-                  className="w-2 h-2 bg-blue-500 rounded-full flex-shrink-0"
+                  className={cn(
+                    "w-2 h-2 rounded-full flex-shrink-0",
+                    colors.medium
+                  )}
                   onClick={() => onRemoveHandler(item.id)}
                 />
               )}

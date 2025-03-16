@@ -4,7 +4,7 @@ import TabsLayout from "./layout";
 const Language = () => {
   return (
     <TabsLayout className="">
-      <SelectGenre />
+      <SelectGenre accentColor="blue" />
     </TabsLayout>
   );
 };
