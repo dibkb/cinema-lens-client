@@ -5,10 +5,19 @@ import { cn } from "@/lib/utils";
 import { parseAsBoolean, useQueryState } from "nuqs";
 import { useMemo } from "react";
 
-const SearchBox = ({ type }: { type?: string }) => {
-  const [query, setQuery] = useQueryState("query", {
-    defaultValue: "",
-  });
+const SearchBox = ({
+  type,
+  homepage,
+  handleSubmit,
+  query,
+  setQuery,
+}: {
+  type?: string;
+  homepage?: boolean;
+  handleSubmit: () => void;
+  query: string;
+  setQuery: (query: string) => void;
+}) => {
   const [reddit, setReddit] = useQueryState(
     "reddit",
     parseAsBoolean.withDefault(false)
@@ -35,7 +44,12 @@ const SearchBox = ({ type }: { type?: string }) => {
   }, [type]);
 
   return (
-    <div className="bg-white rounded-lg w-[900px] mt-9 px-4 py-2 flex flex-col">
+    <div
+      className={cn(
+        "bg-white rounded-lg w-[900px] max-w-[90vw] mt-9 px-4 py-2 flex flex-col",
+        homepage === false && "absolute bottom-4"
+      )}
+    >
       <textarea
         placeholder={copy?.placeholder}
         className="w-full outline-none resize-none overflow-y-hidden min-h-[4rem] font-medium"
@@ -75,6 +89,7 @@ const SearchBox = ({ type }: { type?: string }) => {
         </div>
 
         <button
+          onClick={handleSubmit}
           className={cn(
             "w-9 h-9 rounded-full flex items-center justify-center",
             "transition-colors cursor-pointer",
