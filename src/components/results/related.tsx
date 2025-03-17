@@ -1,4 +1,4 @@
-import { fetchMoviesByTitle } from "@/axios/fetch";
+import { fetchMoviesById } from "@/axios/fetch";
 import useHistoryStore, { Movie } from "@/store/history";
 import { useEffect, useState } from "react";
 import {
@@ -11,20 +11,22 @@ import {
 import { Skeleton } from "../ui/skeleton";
 import MoviesRenderer from "./render";
 
-const SimilarMovies = () => {
-  const { similar_movies } = useHistoryStore();
+const RelatedMovies = () => {
+  const { related_movies } = useHistoryStore();
   const [loading, setLoading] = useState(true);
   const [movies, setMovies] = useState<Movie[]>([]);
   useEffect(() => {
     setLoading(true);
     async function fetchMovies() {
-      if (!similar_movies) return;
-      const movies = await fetchMoviesByTitle(similar_movies);
+      if (!related_movies) return;
+      const movies = await fetchMoviesById(
+        related_movies.map((movie) => movie.id)
+      );
       setMovies(movies);
       setLoading(false);
     }
     fetchMovies();
-  }, [similar_movies]);
+  }, [related_movies]);
   if (loading) {
     return (
       <div className="relative w-full px-4">
@@ -57,8 +59,8 @@ const SimilarMovies = () => {
         {movies.length > 0 && (
           <MoviesRenderer
             movies={movies}
-            title="Similar Movies"
-            description="Movies that have a similar plot to your mentioned film."
+            title="Related Movies"
+            description="Movies that have the same actors or directors or genres as your mentioned film."
           />
         )}
       </>
@@ -66,4 +68,4 @@ const SimilarMovies = () => {
   }
 };
 
-export default SimilarMovies;
+export default RelatedMovies;

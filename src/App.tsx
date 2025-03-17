@@ -7,8 +7,9 @@ import Pencil from "./icons/pencil";
 import { useQueryState } from "nuqs";
 import { useEffect, useRef, useState } from "react";
 import useHistoryStore from "./store/history";
-import Results from "./components/results/results";
 import { cn } from "./lib/utils";
+import SimilarMovies from "./components/results/similar";
+import RelatedMovies from "./components/results/related";
 
 function App() {
   const [type, setType] = useQueryState("type", {
@@ -20,15 +21,20 @@ function App() {
 
   const [isStreaming, setIsStreaming] = useState(false);
   const eventSourceRef = useRef<EventSource | null>(null);
-  const [, setMessages] = useState<{ role: string; content: string }[]>([]);
   const {
     homepage,
     setHomepage,
     tempMessages,
     updateTempMessages,
     clearTempMessages,
-    results,
-    updateResults,
+    setTitle,
+    title,
+    similar_movies,
+    related_movies,
+    setSimilarMovies,
+    setRelatedMovies,
+    setRedditMovies,
+    setLetterboxdMovies,
   } = useHistoryStore();
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -47,17 +53,18 @@ function App() {
   }, []);
 
   const handleSubmit = () => {
-    // updateSearchHistory(query);
+    // updateSearchHistory(query)
+    setSimilarMovies([]);
+    setRelatedMovies([]);
+    setRedditMovies([]);
+    setLetterboxdMovies([]);
+    setTitle(query);
     setHomepage(false);
     if (!query.trim() || isStreaming) return;
 
-    // Add user message
-    setMessages((prev) => [...prev, { role: "user", content: query }]);
     setQuery("");
     clearTempMessages();
 
-    // Add empty assistant message
-    setMessages((prev) => [...prev, { role: "assistant", content: "" }]);
     setIsStreaming(true);
 
     // Close existing connection
@@ -72,32 +79,23 @@ function App() {
 
     // Handle incoming data
     eventSourceRef.current.onmessage = (event) => {
-      if (event.data.startsWith("xxx==result==xxx")) {
-        const data = event.data.substring("xxx==result==xxx".length);
-        try {
-          updateTempMessages(data);
-          const parsedData = JSON.parse(data);
-          // Create the result object with the expected structure
-          const result = {
-            similar_movies_by_plot: parsedData?.similar_movies_by_plot || [],
-            similar_movies_by_features:
-              parsedData?.similar_movies_by_features || [],
-          };
+      if (event.data.startsWith("xx--data")) {
+        const [key, value] = event.data.split("xx--data--")[1].split("--");
 
-          updateResults(result);
-          console.log("Successfully parsed result:", result);
-        } catch (error) {
-          console.error("Error parsing result data:", error, data);
+        if (key === "similar_movies") {
+          setSimilarMovies(JSON.parse(value));
+        } else if (key === "related_movies") {
+          setRelatedMovies(JSON.parse(value));
         }
-      } else {
-        updateTempMessages(event.data);
       }
+      updateTempMessages(event.data);
     };
 
     // Handle errors/stream end
     eventSourceRef.current.onerror = () => {
       eventSourceRef.current?.close();
       setIsStreaming(false);
+      clearTempMessages();
       eventSourceRef.current = null;
     };
   };
@@ -105,7 +103,7 @@ function App() {
   const alternateHomepage = (
     <section className="container mx-auto max-w-[900px] w-[90vw] h-[calc(100vh-9rem)] overflow-y-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
       <h1 className="text-3xl h-[5rem] z-10 font-bold absolute top-0 left-0 max-w-[900px] translate-x-1/2 w-[90vw] libre-baskerville-regular py-4 text-stone-700">
-        {query}
+        {title}
       </h1>
       <div className="flex flex-col gap-1 text-sm text-stone-700 max-h-[400px] overflow-y-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] cutive-mono-regular font-medium">
         {tempMessages.map((message) => (
@@ -115,7 +113,14 @@ function App() {
       </div>
       {/* Results */}
       <div className="mb-4">
-        {results && <Results />}
+        {/* {(similar_movies.length ||
+          related_movies.length ||
+          reddit_movies.length ||
+          letterboxd_movies.length) > 0 && <Results />} */}
+
+        {similar_movies.length > 0 && <SimilarMovies />}
+        {related_movies.length > 0 && <RelatedMovies />}
+
         <span className="h-[180px] w-full bg-white flex"></span>
       </div>
     </section>
