@@ -103,7 +103,7 @@ function App() {
   };
 
   const alternateHomepage = (
-    <section className="container mx-auto max-w-[900px] w-[90vw] h-[calc(100vh-9rem)]">
+    <section className="container mx-auto max-w-[900px] w-[90vw] h-[calc(100vh-9rem)] overflow-y-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
       <h1 className="text-3xl h-[5rem] z-10 font-bold absolute top-0 left-0 max-w-[900px] translate-x-1/2 w-[90vw] libre-baskerville-regular py-4 text-stone-700">
         {searchHistory[searchHistory.length - 1]}
       </h1>
@@ -119,9 +119,9 @@ function App() {
   );
 
   return (
-    <main className="flex flex-col items-center justify-center h-[100vh] overflow-y-none">
+    <main className="flex flex-col items-center justify-center h-[100vh] overflow-y-hidden bg-white">
       {homepage === true && (
-        <section className="max-w-[900px] w-[90vw]">
+        <section className="max-w-[900px] w-[90vw] max-h-[calc(100vh-9rem)] overflow-y-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
           <div className="flex flex-col gap-4 items-center">
             <h2 className="text-5xl libre-baskerville-regular">
               Discover Your Next Favorite Movie
@@ -137,7 +137,7 @@ function App() {
               setType(value);
             }}
           >
-            <TabsList className="bg-stone-50 text-xs">
+            <TabsList className="bg-zinc-200 text-xs">
               <TabsTrigger
                 value="natural-language"
                 className="text-xs cursor-pointer data-[state=active]:bg-blue-600 data-[state=active]:text-white data-[state=active]:border-none w-64"

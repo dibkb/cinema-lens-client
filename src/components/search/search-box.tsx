@@ -46,7 +46,7 @@ const SearchBox = ({
   return (
     <div
       className={cn(
-        "bg-white rounded-lg w-[900px] max-w-[90vw] mt-9 px-4 py-2 flex flex-col",
+        "rounded-lg w-[900px] max-w-[90vw] mt-9 px-4 py-2 flex flex-col bg-zinc-50 border border-zinc-200",
         homepage === false && "absolute bottom-4"
       )}
     >
