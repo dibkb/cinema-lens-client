@@ -17,6 +17,13 @@ export interface Movie {
   rating: number;
   year: number;
 }
+interface SearchHistory {
+  query: string;
+  related_movies: Movie[] | null;
+  similar_movies: Movie[] | null;
+  reddit_movies: Movie[] | null;
+  letterboxd_movies: Movie[] | null;
+}
 interface HistoryState {
   homepage: boolean;
   setHomepage: (homepage: boolean) => void;
@@ -24,12 +31,13 @@ interface HistoryState {
   updateTempMessages: (message: string) => void;
   clearTempMessages: () => void;
 
-  searchHistory: string[];
-  updateSearchHistory: (query: string) => void;
+  searchHistory: SearchHistory[];
+  updateSearchHistory: (searchHistory: SearchHistory) => void;
   clearSearchHistory: () => void;
 
   results: Result | null;
   updateResults: (result: Result) => void;
+  clearResults: () => void;
 }
 
 const useHistoryStore = create<HistoryState>((set) => ({
@@ -41,12 +49,15 @@ const useHistoryStore = create<HistoryState>((set) => ({
   clearTempMessages: () => set({ tempMessages: [] }),
 
   searchHistory: [],
-  updateSearchHistory: (query: string) =>
-    set((state) => ({ searchHistory: [...state.searchHistory, query] })),
+  updateSearchHistory: (searchHistory: SearchHistory) =>
+    set((state) => ({
+      searchHistory: [...state.searchHistory, searchHistory],
+    })),
   clearSearchHistory: () => set({ searchHistory: [] }),
 
   results: null,
   updateResults: (result: Result) => set({ results: result }),
+  clearResults: () => set({ results: null }),
 }));
 
 export default useHistoryStore;
