@@ -8,7 +8,7 @@ import { useQueryState } from "nuqs";
 import { useEffect, useRef, useState } from "react";
 import useHistoryStore from "./store/history";
 import Results from "./components/results/results";
-import { stringToJson } from "./utils/modifiler";
+import { cn } from "./lib/utils";
 
 function App() {
   const [type, setType] = useQueryState("type", {
@@ -77,13 +77,13 @@ function App() {
       if (event.data.startsWith("xxx==result==xxx")) {
         const data = event.data.substring("xxx==result==xxx".length);
         try {
-          const parsedData = stringToJson(data);
-          console.log(parsedData);
+          updateTempMessages(data);
+          const parsedData = JSON.parse(data);
           // Create the result object with the expected structure
           const result = {
-            similar_movies_by_plot: parsedData["similar_movies_by_plot"],
+            similar_movies_by_plot: parsedData?.similar_movies_by_plot || [],
             similar_movies_by_features:
-              parsedData["similar_movies_by_features"],
+              parsedData?.similar_movies_by_features || [],
           };
 
           updateResults(result);
@@ -124,7 +124,7 @@ function App() {
   );
 
   return (
-    <main className="flex flex-col items-center justify-center h-[100vh] overflow-y-hidden bg-transparent">
+    <main className="flex flex-col items-center justify-center h-[100vh] overflow-hidden bg-transparent">
       {homepage === true && (
         <section className="max-w-[900px] w-[90vw] max-h-[calc(100vh-9rem)] overflow-y-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
           <div className="flex flex-col gap-4 items-center">
@@ -135,46 +135,57 @@ function App() {
               Search by natural language or dive into detailed plot summaries.
             </p>
           </div>
-          <Tabs
-            defaultValue={type}
-            className="mt-12 w-full flex justify-center items-center"
-            onValueChange={(value) => {
-              setType(value);
-            }}
-          >
-            <TabsList className="bg-zinc-200 text-xs">
-              <TabsTrigger
-                value="natural-language"
-                className="text-xs cursor-pointer data-[state=active]:bg-blue-600 data-[state=active]:text-white data-[state=active]:border-none w-64"
-              >
-                <LanguageIcon />
-                Natural Language
-              </TabsTrigger>
-              <TabsTrigger
-                value="plot-summaries"
-                className="text-xs cursor-pointer data-[state=active]:bg-cyan-600 data-[state=active]:text-white data-[state=active]:border-none w-64"
-              >
-                <Pencil />
-                Plot Summaries
-              </TabsTrigger>
-            </TabsList>
-            <TabsContent value="natural-language" className="w-full">
-              <Language />
-            </TabsContent>
-            <TabsContent value="plot-summaries" className="w-full">
-              <Summary />
-            </TabsContent>
-          </Tabs>
         </section>
       )}
+      <section
+        className={cn(
+          homepage === false && "absolute bottom-4 z-40 max-w-[900px] w-[90vw]",
+          "bg-white"
+        )}
+      >
+        <Tabs
+          defaultValue={type}
+          className={cn(
+            "w-full flex justify-center items-center my-6",
+            homepage === false && "mt-4 mb-6"
+          )}
+          onValueChange={(value) => {
+            setType(value);
+          }}
+        >
+          <TabsList className="bg-zinc-200 text-xs">
+            <TabsTrigger
+              value="natural-language"
+              className="text-xs cursor-pointer data-[state=active]:bg-blue-600 data-[state=active]:text-white data-[state=active]:border-none w-64"
+            >
+              <LanguageIcon />
+              Natural Language
+            </TabsTrigger>
+            <TabsTrigger
+              value="plot-summaries"
+              className="text-xs cursor-pointer data-[state=active]:bg-cyan-600 data-[state=active]:text-white data-[state=active]:border-none w-64"
+            >
+              <Pencil />
+              Plot Summaries
+            </TabsTrigger>
+          </TabsList>
+          <TabsContent value="natural-language" className="w-full">
+            <Language />
+          </TabsContent>
+          <TabsContent value="plot-summaries" className="w-full">
+            <Summary />
+          </TabsContent>
+        </Tabs>
+        <SearchBox
+          type={type}
+          className={""}
+          handleSubmit={handleSubmit}
+          query={query}
+          setQuery={setQuery}
+        />
+      </section>
+
       {homepage === false && alternateHomepage}
-      <SearchBox
-        type={type}
-        homepage={homepage}
-        handleSubmit={handleSubmit}
-        query={query}
-        setQuery={setQuery}
-      />
     </main>
   );
 }

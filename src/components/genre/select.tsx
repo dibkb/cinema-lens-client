@@ -6,7 +6,7 @@ import { cn } from "@/lib/utils";
 import { AccentColor, getAccentColors } from "@/lib/colors";
 import "@/styles/scrollbar.css";
 import { useQueryState, parseAsInteger, parseAsArrayOf } from "nuqs";
-
+import useHistoryStore from "@/store/history";
 interface SelectGenreProps {
   accentColor?: AccentColor;
 }
@@ -17,6 +17,7 @@ const SelectGenre = ({ accentColor = "cyan" }: SelectGenreProps) => {
     "selected",
     parseAsArrayOf(parseAsInteger)
   );
+  const { homepage } = useHistoryStore();
   const [isFocused, setIsFocused] = useState(false);
 
   const colors = useMemo(() => getAccentColors(accentColor), [accentColor]);
@@ -126,7 +127,12 @@ const SelectGenre = ({ accentColor = "cyan" }: SelectGenreProps) => {
       )}
 
       {isFocused && filteredGenres.length > 0 && (
-        <main className="absolute top-full mt-1 left-0 right-0 border bg-white border-stone-300 rounded-xl py-1 overflow-y-auto max-h-[300px] scrollbar-hide shadow-lg">
+        <main
+          className={cn(
+            "absolute mt-1 left-0 right-0 border bg-white border-stone-300 rounded-xl py-1 overflow-y-auto max-h-[300px] scrollbar-hide shadow-lg",
+            homepage === true ? "top-full" : " bottom-[calc(100%+10px)]"
+          )}
+        >
           {filteredGenres.map((item) => (
             <div
               key={item.id}

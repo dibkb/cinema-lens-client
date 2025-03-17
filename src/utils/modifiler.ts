@@ -1,17 +1,54 @@
 export function stringToJson(inputStr: string) {
-  // 1. Handle apostrophes in values by temporarily replacing them
-  const tempMarker = "___APOSTROPHE___";
-  const escapedStr = inputStr
-    .replace(/'/g, tempMarker) // Replace all single quotes
-    .replace(/"/g, "'") // Convert real apostrophes back
-    .replace(new RegExp(tempMarker, "g"), '"'); // Restore original quotes as JSON needs
+  if (!inputStr || typeof inputStr !== "string") {
+    return null;
+  }
 
-  // 2. Wrap in parentheses for safe evaluation
+  // Try to parse if it's already valid JSON
   try {
-    const obj = new Function(`return (${escapedStr})`)();
-    return JSON.parse(JSON.stringify(obj, null, 2));
+    return JSON.parse(inputStr);
+  } catch {
+    // Not valid JSON, continue with conversion
+  }
+
+  try {
+    // First, handle the entire string by replacing all single quotes with double quotes
+    // but we need to be careful with apostrophes in text
+
+    // Step 1: Convert the entire string to use double quotes instead of single quotes
+    // This is a more comprehensive approach than trying to match specific patterns
+    let processedStr = inputStr;
+
+    // Step 2: Replace all single quotes with double quotes
+    // But first, temporarily replace any escaped single quotes
+    const tempMarker = "___APOSTROPHE___";
+    processedStr = processedStr
+      .replace(/\\'/g, tempMarker) // Save escaped single quotes
+      .replace(/'/g, '"') // Replace all single quotes with double quotes
+      .replace(new RegExp(tempMarker, "g"), "\\'"); // Restore escaped single quotes
+
+    // Step 3: Fix any unquoted property names
+    processedStr = processedStr.replace(
+      /([{,]\s*)([a-zA-Z0-9_]+)(\s*:)/g,
+      '$1"$2"$3'
+    );
+
+    // Try to parse the processed string
+    try {
+      return JSON.parse(processedStr);
+    } catch (parseError) {
+      console.log("First parse attempt failed:", parseError);
+
+      // If still not valid JSON, try a more aggressive approach
+      // Convert to valid JSON by wrapping in braces if needed
+      if (!processedStr.trim().startsWith("{")) {
+        processedStr = "{" + processedStr + "}";
+      }
+
+      // Last attempt to parse
+      return JSON.parse(processedStr);
+    }
   } catch (error) {
-    console.error("Conversion error:", error);
+    console.error("String to JSON conversion error:", error);
     return null;
   }
 }

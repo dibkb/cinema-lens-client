@@ -1,8 +1,13 @@
 import { api } from "./base";
 
 export const fetchMoviesByTitle = async (title: string[]) => {
-  const response = await api.post(`movies/batch-by-title`, title);
-  return response.data;
+  try {
+    const response = await api.post(`movies/batch-by-title`, title);
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching movies by title:", error);
+    return [];
+  }
 };
 
 export const fetchMoviesById = async (ids: number[]) => {

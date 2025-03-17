@@ -22,7 +22,6 @@ function Results() {
   const [loading, setLoading] = useState(true);
   const [relatedMovies, setRelatedMovies] = useState<Movie[]>([]);
   const [similarMovies, setSimilarMovies] = useState<Movie[]>([]);
-  console.log(results);
   useEffect(() => {
     setLoading(true);
     async function fetchMovies() {
@@ -69,100 +68,104 @@ function Results() {
   } else {
     return (
       <>
-        <Accordion type="single" collapsible defaultValue="item-01">
-          <AccordionItem value="item-01">
-            <AccordionTrigger className="">
-              Similar Movies by Plot
-            </AccordionTrigger>
-            <p className="text-sm text-stone-500">
-              Movies that share the same plot as your requested film.
-            </p>
-            <AccordionContent>
-              <div className="relative w-full px-4">
-                <Carousel
-                  opts={{
-                    align: "start",
-                  }}
-                  className="w-full mt-4"
-                >
-                  <CarouselContent>
-                    {similarMovies.map((movie) => (
-                      <CarouselItem
-                        key={movie.poster_url}
-                        className="md:basis-1/2 lg:basis-1/3 pl-1"
-                      >
-                        <div className="p-1 h-[400px]">
-                          <img
-                            src={processImageUrl(movie.poster_url)}
-                            alt={movie.title}
-                            className="w-full h-full object-cover rounded-sm"
-                          />
-                        </div>
-                        <div className="mt-1 flex gap-1">
-                          <p className="capitalize line-clamp-1">
-                            {movie.title}
-                          </p>
-                          <p className="text-sm text-zinc-400">
-                            ({movie.year})
-                          </p>
-                        </div>
-                      </CarouselItem>
-                    ))}
-                  </CarouselContent>
-                  <CarouselPrevious className="left-1 cursor-pointer" />
-                  <CarouselNext className="right-1 cursor-pointer" />
-                </Carousel>
-              </div>
-            </AccordionContent>
-          </AccordionItem>
-        </Accordion>
+        {similarMovies.length > 0 && (
+          <Accordion type="single" collapsible defaultValue="item-01">
+            <AccordionItem value="item-01">
+              <AccordionTrigger className="">
+                Similar Movies by Plot
+              </AccordionTrigger>
+              <p className="text-sm text-stone-500">
+                Movies that share the same plot as your requested film.
+              </p>
+              <AccordionContent>
+                <div className="relative w-full px-4">
+                  <Carousel
+                    opts={{
+                      align: "start",
+                    }}
+                    className="w-full mt-4"
+                  >
+                    <CarouselContent>
+                      {similarMovies.map((movie) => (
+                        <CarouselItem
+                          key={movie.poster_url}
+                          className="md:basis-1/2 lg:basis-1/3 pl-1"
+                        >
+                          <div className="p-1 h-[400px]">
+                            <img
+                              src={processImageUrl(movie.poster_url)}
+                              alt={movie.title}
+                              className="w-full h-full object-cover rounded-sm"
+                            />
+                          </div>
+                          <div className="mt-1 flex gap-1">
+                            <p className="capitalize line-clamp-1">
+                              {movie.title}
+                            </p>
+                            <p className="text-sm text-zinc-400">
+                              ({movie.year})
+                            </p>
+                          </div>
+                        </CarouselItem>
+                      ))}
+                    </CarouselContent>
+                    <CarouselPrevious className="left-1 cursor-pointer" />
+                    <CarouselNext className="right-1 cursor-pointer" />
+                  </Carousel>
+                </div>
+              </AccordionContent>
+            </AccordionItem>
+          </Accordion>
+        )}
 
-        <Accordion type="single" collapsible defaultValue="item-01">
-          <AccordionItem value="item-01">
-            <AccordionTrigger className="">Related Movies</AccordionTrigger>
-            <p className="text-sm text-stone-500">
-              Movies that share common actors, genres, or directors with your
-              requested film.
-            </p>
-            <AccordionContent>
-              <div className="relative w-full px-4">
-                <Carousel
-                  opts={{
-                    align: "start",
-                  }}
-                  className="w-full mt-4"
-                >
-                  <CarouselContent>
-                    {relatedMovies.map((movie) => (
-                      <CarouselItem
-                        key={movie.poster_url}
-                        className="md:basis-1/2 lg:basis-1/3 pl-1"
-                      >
-                        <div className="p-1 h-[400px]">
-                          <img
-                            src={processImageUrl(movie.poster_url)}
-                            alt={movie.title}
-                            className="w-full h-full object-cover rounded-sm"
-                          />
-                        </div>
-                        <div className="mt-1 flex gap-1">
-                          <p className="capitalize line-clamp-1">
-                            {movie.title}
-                          </p>
-                          <p className="text-sm text-zinc-400">
-                            ({movie.year})
-                          </p>
-                        </div>
-                      </CarouselItem>
-                    ))}
-                  </CarouselContent>
-                  <CarouselPrevious className="left-1 cursor-pointer" />
-                  <CarouselNext className="right-1 cursor-pointer" />
-                </Carousel>
-              </div>
-            </AccordionContent>
-          </AccordionItem>
-        </Accordion>
+        {relatedMovies.length > 0 && (
+          <Accordion type="single" collapsible defaultValue="item-01">
+            <AccordionItem value="item-01">
+              <AccordionTrigger className="">Related Movies</AccordionTrigger>
+              <p className="text-sm text-stone-500">
+                Movies that share common actors, genres, or directors with your
+                requested film.
+              </p>
+              <AccordionContent>
+                <div className="relative w-full px-4">
+                  <Carousel
+                    opts={{
+                      align: "start",
+                    }}
+                    className="w-full mt-4"
+                  >
+                    <CarouselContent>
+                      {relatedMovies.map((movie) => (
+                        <CarouselItem
+                          key={movie.poster_url}
+                          className="md:basis-1/2 lg:basis-1/3 pl-1"
+                        >
+                          <div className="p-1 h-[400px]">
+                            <img
+                              src={processImageUrl(movie.poster_url)}
+                              alt={movie.title}
+                              className="w-full h-full object-cover rounded-sm"
+                            />
+                          </div>
+                          <div className="mt-1 flex gap-1">
+                            <p className="capitalize line-clamp-1">
+                              {movie.title}
+                            </p>
+                            <p className="text-sm text-zinc-400">
+                              ({movie.year})
+                            </p>
+                          </div>
+                        </CarouselItem>
+                      ))}
+                    </CarouselContent>
+                    <CarouselPrevious className="left-1 cursor-pointer" />
+                    <CarouselNext className="right-1 cursor-pointer" />
+                  </Carousel>
+                </div>
+              </AccordionContent>
+            </AccordionItem>
+          </Accordion>
+        )}
       </>
     );
   }

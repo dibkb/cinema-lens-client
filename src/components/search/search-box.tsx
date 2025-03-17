@@ -7,16 +7,17 @@ import { useMemo } from "react";
 
 const SearchBox = ({
   type,
-  homepage,
   handleSubmit,
   query,
   setQuery,
+  className,
 }: {
   type?: string;
   homepage?: boolean;
   handleSubmit: () => void;
   query: string;
   setQuery: (query: string) => void;
+  className?: string;
 }) => {
   const [reddit, setReddit] = useQueryState(
     "reddit",
@@ -46,8 +47,8 @@ const SearchBox = ({
   return (
     <div
       className={cn(
-        "rounded-lg w-[900px] max-w-[90vw] mt-9 px-4 py-2 flex flex-col bg-zinc-50 border border-zinc-200",
-        homepage === false && "absolute bottom-4"
+        "rounded-lg w-[900px] max-w-[90vw] px-4 py-2 flex flex-col bg-zinc-50 border border-zinc-200",
+        className
       )}
     >
       <textarea
