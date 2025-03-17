@@ -5,6 +5,18 @@ interface Result {
   similar_movies_by_plot: string[];
 }
 
+export interface Movie {
+  actors: string[];
+  director: string[];
+  genres: string[];
+  id: number;
+  poster_url: string;
+  release_date: string;
+  title: string;
+  plot: string;
+  rating: number;
+  year: number;
+}
 interface HistoryState {
   homepage: boolean;
   setHomepage: (homepage: boolean) => void;

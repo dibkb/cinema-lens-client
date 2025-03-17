@@ -8,6 +8,7 @@ import { useQueryState } from "nuqs";
 import { useEffect, useRef, useState } from "react";
 import useHistoryStore from "./store/history";
 import Results from "./components/results/results";
+import { stringToJson } from "./utils/modifiler";
 
 function App() {
   const [type, setType] = useQueryState("type", {
@@ -74,24 +75,25 @@ function App() {
     // Handle incoming data
     eventSourceRef.current.onmessage = (event) => {
       if (event.data.startsWith("xxx==result==xxx")) {
-        const data = event.data.split("xxx==result==xxx")[1];
+        const data = event.data.substring("xxx==result==xxx".length);
         try {
-          // Convert Python-style dict to valid JSON by replacing single quotes with double quotes
-          const jsonString = data
-            .trim()
-            .replace(/'/g, '"')
-            .replace(/False/g, "false")
-            .replace(/True/g, "true")
-            .replace(/None/g, "null");
+          const parsedData = stringToJson(data);
+          console.log(parsedData);
+          // Create the result object with the expected structure
+          const result = {
+            similar_movies_by_plot: parsedData["similar_movies_by_plot"],
+            similar_movies_by_features:
+              parsedData["similar_movies_by_features"],
+          };
 
-          const result = JSON.parse(jsonString);
           updateResults(result);
-          // Now you can use the result data
+          console.log("Successfully parsed result:", result);
         } catch (error) {
-          console.error("Error parsing JSON data:", error, data);
+          console.error("Error parsing result data:", error, data);
         }
+      } else {
+        updateTempMessages(event.data);
       }
-      updateTempMessages(event.data);
     };
 
     // Handle errors/stream end
@@ -114,12 +116,15 @@ function App() {
         <div ref={messagesEndRef} />
       </div>
       {/* Results */}
-      {results && <Results />}
+      <div className="mb-4">
+        {results && <Results />}
+        <span className="h-[100px] w-full bg-white flex"></span>
+      </div>
     </section>
   );
 
   return (
-    <main className="flex flex-col items-center justify-center h-[100vh] overflow-y-hidden bg-white">
+    <main className="flex flex-col items-center justify-center h-[100vh] overflow-y-hidden bg-transparent">
       {homepage === true && (
         <section className="max-w-[900px] w-[90vw] max-h-[calc(100vh-9rem)] overflow-y-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
           <div className="flex flex-col gap-4 items-center">
