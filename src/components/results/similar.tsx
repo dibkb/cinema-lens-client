@@ -49,16 +49,18 @@ const MoviesRenderer = ({
                         alt={movie?.title}
                         className="w-full h-full object-cover rounded-sm"
                       />
-                      <div className="absolute inset-0 bg-black/70 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-center items-center p-3 text-white rounded-sm">
+                      <div className="absolute inset-0 bg-black/80 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-center items-center p-3 text-white rounded-sm">
                         {movie?.year && (
-                          <p className="text-xs mb-1">({movie?.year})</p>
+                          <p className="text-xs mb-1 font-semibold">
+                            ({movie?.year})
+                          </p>
                         )}
 
                         {movie?.genres && (
                           <div className="flex flex-wrap gap-1">
                             {movie?.genres.map((genre) => {
                               return (
-                                <span className="w-full">
+                                <span className="w-full font-semibold">
                                   {
                                     genres.find(
                                       (g) =>
