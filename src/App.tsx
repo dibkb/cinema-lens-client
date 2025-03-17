@@ -1,4 +1,3 @@
-import { api } from "./axios/base";
 import SearchBox from "./components/search/search-box";
 import Language from "./components/tabs/language";
 import Summary from "./components/tabs/summary";
@@ -7,6 +6,7 @@ import LanguageIcon from "./icons/language";
 import Pencil from "./icons/pencil";
 import { parseAsBoolean, useQueryState } from "nuqs";
 import { useEffect, useRef, useState } from "react";
+import useHistoryStore from "./store/history";
 
 function App() {
   const [type, setType] = useQueryState("type", {
@@ -22,10 +22,15 @@ function App() {
 
   const [isStreaming, setIsStreaming] = useState(false);
   const eventSourceRef = useRef<EventSource | null>(null);
-  const [messages, setMessages] = useState<{ role: string; content: string }[]>(
-    []
-  );
-  const [tempUpdate, setTempUpdate] = useState<string[]>([]);
+  const [, setMessages] = useState<{ role: string; content: string }[]>([]);
+  const { tempMessages, updateTempMessages, clearTempMessages } =
+    useHistoryStore();
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  // Scroll to bottom whenever tempUpdate changes
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [tempMessages]);
 
   // Cleanup on component unmount
   useEffect(() => {
@@ -43,6 +48,7 @@ function App() {
     // Add user message
     setMessages((prev) => [...prev, { role: "user", content: query }]);
     setQuery("");
+    clearTempMessages();
 
     // Add empty assistant message
     setMessages((prev) => [...prev, { role: "assistant", content: "" }]);
@@ -60,8 +66,7 @@ function App() {
 
     // Handle incoming data
     eventSourceRef.current.onmessage = (event) => {
-      console.log(event.data);
-      setTempUpdate((prev) => [...prev, event.data]);
+      updateTempMessages(event.data);
     };
 
     // Handle errors/stream end
@@ -118,10 +123,11 @@ function App() {
       )}
       {homepage === false && (
         <section className="container mx-auto max-w-[900px] w-[90vw] ">
-          <div className="flex flex-col gap-1 text-xs text-stone-600">
-            {tempUpdate.map((message) => (
+          <div className="flex flex-col gap-1 text-sm text-stone-600 max-h-[400px] overflow-y-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] cutive-mono-regular font-medium">
+            {tempMessages.map((message) => (
               <div key={message}>{message}</div>
             ))}
+            <div ref={messagesEndRef} />
           </div>
         </section>
       )}
