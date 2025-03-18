@@ -12,19 +12,20 @@ import { Skeleton } from "../ui/skeleton";
 
 import MoviesRenderer from "./render";
 
-const RedditMovies = () => {
-  const { reddit_movies } = useHistoryStore();
+const Letterboxd = () => {
+  const { letterboxd_movies } = useHistoryStore();
   const [loading, setLoading] = useState(true);
   const [movies, setMovies] = useState<Movie[]>([]);
+  console.log(letterboxd_movies);
   useEffect(() => {
     setLoading(true);
     async function fetchMovies() {
-      if (!reddit_movies || reddit_movies.length === 0) return;
+      if (!letterboxd_movies || letterboxd_movies.length === 0) return;
 
       try {
         // Create an array of promises for each reddit movie source
-        const moviePromises = reddit_movies.map((redditMovie) => {
-          const movieTitles = redditMovie.movies.map((movie) =>
+        const moviePromises = letterboxd_movies.map((letterboxdMovie) => {
+          const movieTitles = letterboxdMovie.movies.map((movie) =>
             movie.toLowerCase().trim()
           );
           return fetchMoviesByTitle(movieTitles);
@@ -49,7 +50,7 @@ const RedditMovies = () => {
       }
     }
     fetchMovies();
-  }, [reddit_movies]);
+  }, [letterboxd_movies]);
   if (loading) {
     return (
       <div className="relative w-full px-4">
@@ -83,18 +84,18 @@ const RedditMovies = () => {
           <div className="flex flex-col gap-2">
             <MoviesRenderer
               movies={movies}
-              title="Reddit Movies"
-              description="Movies that are mentioned in Reddit threads."
+              title="Letterboxd Movies"
+              description="Movies that are mentioned in Letterboxd lists."
             />
             <div className="flex gap-2 flex-wrap">
-              {reddit_movies.map((redditMovie) => (
+              {letterboxd_movies.map((letterboxdMovie) => (
                 <a
-                  href={redditMovie.site_url}
+                  href={letterboxdMovie.site_url}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-xs px-4 rounded-lg bg-zinc-50 text-zinc-700 hover:bg-zinc-200 hover:text-zinc-900 max-w-[300px] truncate"
                 >
-                  {redditMovie.site_url}
+                  {letterboxdMovie.site_url}
                 </a>
               ))}
             </div>
@@ -105,4 +106,4 @@ const RedditMovies = () => {
   }
 };
 
-export default RedditMovies;
+export default Letterboxd;

@@ -26,12 +26,12 @@ interface HistoryState {
   similar_movies: string[];
   related_movies: string[];
   reddit_movies: RedditResult[];
-  letterboxd_movies: string[];
+  letterboxd_movies: RedditResult[];
 
   setSimilarMovies: (similar_movies: string[]) => void;
   setRelatedMovies: (related_movies: string[]) => void;
   setRedditMovies: (reddit_movies: RedditResult[]) => void;
-  setLetterboxdMovies: (letterboxd_movies: string[]) => void;
+  setLetterboxdMovies: (letterboxd_movies: RedditResult[]) => void;
 
   title: string;
   setTitle: (title: string) => void;
@@ -59,7 +59,7 @@ const useHistoryStore = create<HistoryState>((set) => ({
   setSimilarMovies: (similar_movies: string[]) => set({ similar_movies }),
   setRelatedMovies: (related_movies: string[]) => set({ related_movies }),
   setRedditMovies: (reddit_movies: RedditResult[]) => set({ reddit_movies }),
-  setLetterboxdMovies: (letterboxd_movies: string[]) =>
+  setLetterboxdMovies: (letterboxd_movies: RedditResult[]) =>
     set({ letterboxd_movies }),
 
   entities: {},
