@@ -1,4 +1,4 @@
-import { fetchMoviesById } from "@/axios/fetch";
+import { fetchMoviesByTitle } from "@/axios/fetch";
 import useHistoryStore, { Movie } from "@/store/history";
 import { useEffect, useState } from "react";
 import {
@@ -19,9 +19,7 @@ const RelatedMovies = () => {
     setLoading(true);
     async function fetchMovies() {
       if (!related_movies) return;
-      const movies = await fetchMoviesById(
-        related_movies.map((movie) => movie.id)
-      );
+      const movies = await fetchMoviesByTitle(related_movies);
       setMovies(movies);
       setLoading(false);
     }
@@ -43,7 +41,7 @@ const RelatedMovies = () => {
                 className="md:basis-1/2 lg:basis-1/3 pl-4"
               >
                 <div className="p-1">
-                  <Skeleton className="h-[400px] w-full rounded aspect-square" />
+                  <Skeleton className="h-[200px] w-full rounded aspect-square" />
                 </div>
               </CarouselItem>
             ))}

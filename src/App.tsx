@@ -10,6 +10,8 @@ import useHistoryStore from "./store/history";
 import { cn } from "./lib/utils";
 import SimilarMovies from "./components/results/similar";
 import RelatedMovies from "./components/results/related";
+import MessageRenderer from "./components/results/message-render";
+import RedditMovies from "./components/results/RedditMovies";
 
 function App() {
   const [type, setType] = useQueryState("type", {
@@ -35,6 +37,9 @@ function App() {
     setRelatedMovies,
     setRedditMovies,
     setLetterboxdMovies,
+    setEntities,
+    entities,
+    reddit_movies,
   } = useHistoryStore();
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -54,6 +59,7 @@ function App() {
 
   const handleSubmit = () => {
     // updateSearchHistory(query)
+
     setSimilarMovies([]);
     setRelatedMovies([]);
     setRedditMovies([]);
@@ -86,6 +92,12 @@ function App() {
           setSimilarMovies(JSON.parse(value));
         } else if (key === "related_movies") {
           setRelatedMovies(JSON.parse(value));
+        } else if (key === "entities") {
+          setEntities(JSON.parse(value));
+        } else if (key === "reddit_results") {
+          setRedditMovies(JSON.parse(value));
+        } else if (key === "letterboxd_results") {
+          setLetterboxdMovies(JSON.parse(value));
         }
       }
       updateTempMessages(event.data);
@@ -95,7 +107,7 @@ function App() {
     eventSourceRef.current.onerror = () => {
       eventSourceRef.current?.close();
       setIsStreaming(false);
-      clearTempMessages();
+      // clearTempMessages();
       eventSourceRef.current = null;
     };
   };
@@ -105,7 +117,12 @@ function App() {
       <h1 className="text-3xl h-[5rem] z-10 font-bold absolute top-0 left-0 max-w-[900px] translate-x-1/2 w-[90vw] libre-baskerville-regular py-4 text-stone-700">
         {title}
       </h1>
-      <div className="flex flex-col gap-1 text-sm text-stone-700 max-h-[400px] overflow-y-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] cutive-mono-regular font-medium">
+      <div
+        className={cn(
+          "flex flex-col gap-1 text-sm text-stone-500 max-h-[400px] overflow-y-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] cutive-mono-regular font-medium"
+          // !isStreaming && "hidden"
+        )}
+      >
         {tempMessages.map((message) => (
           <div key={message}>{message}</div>
         ))}
@@ -113,12 +130,9 @@ function App() {
       </div>
       {/* Results */}
       <div className="mb-4">
-        {/* {(similar_movies.length ||
-          related_movies.length ||
-          reddit_movies.length ||
-          letterboxd_movies.length) > 0 && <Results />} */}
-
+        {/* <MessageRenderer /> */}
         {similar_movies.length > 0 && <SimilarMovies />}
+        {reddit_movies.length > 0 && <RedditMovies />}
         {related_movies.length > 0 && <RelatedMovies />}
 
         <span className="h-[180px] w-full bg-white flex"></span>
@@ -169,7 +183,7 @@ function App() {
               className="text-xs cursor-pointer data-[state=active]:bg-cyan-600 data-[state=active]:text-white data-[state=active]:border-none w-64"
             >
               <Pencil />
-              Plot Summaries
+              Semantic Search
             </TabsTrigger>
           </TabsList>
           <TabsContent value="natural-language" className="w-full">

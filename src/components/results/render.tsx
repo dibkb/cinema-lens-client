@@ -23,11 +23,14 @@ const MoviesRenderer = ({
   movies: Movie[];
   title: string;
   description: string;
+  reddit?: boolean;
 }) => {
   return (
     <Accordion type="single" collapsible defaultValue="item-01">
       <AccordionItem value="item-01">
-        <AccordionTrigger className="">{title}</AccordionTrigger>
+        <AccordionTrigger className="flex items-center gap-2">
+          {title}
+        </AccordionTrigger>
         <p className="text-sm text-stone-500">{description}</p>
         <AccordionContent>
           <div className="relative w-full px-4">

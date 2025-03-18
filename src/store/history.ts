@@ -12,6 +12,10 @@ export interface Movie {
   rating: number;
   year: number;
 }
+export interface RedditResult {
+  movies: string[];
+  site_url: string;
+}
 interface HistoryState {
   homepage: boolean;
   setHomepage: (homepage: boolean) => void;
@@ -20,17 +24,20 @@ interface HistoryState {
   clearTempMessages: () => void;
 
   similar_movies: string[];
-  related_movies: { id: number }[];
-  reddit_movies: string[];
+  related_movies: string[];
+  reddit_movies: RedditResult[];
   letterboxd_movies: string[];
 
   setSimilarMovies: (similar_movies: string[]) => void;
-  setRelatedMovies: (related_movies: { id: number }[]) => void;
-  setRedditMovies: (reddit_movies: string[]) => void;
+  setRelatedMovies: (related_movies: string[]) => void;
+  setRedditMovies: (reddit_movies: RedditResult[]) => void;
   setLetterboxdMovies: (letterboxd_movies: string[]) => void;
 
   title: string;
   setTitle: (title: string) => void;
+
+  entities: Record<string, string>;
+  setEntities: (entities: Record<string, string>) => void;
 }
 
 const useHistoryStore = create<HistoryState>((set) => ({
@@ -50,11 +57,13 @@ const useHistoryStore = create<HistoryState>((set) => ({
   letterboxd_movies: [],
 
   setSimilarMovies: (similar_movies: string[]) => set({ similar_movies }),
-  setRelatedMovies: (related_movies: { id: number }[]) =>
-    set({ related_movies }),
-  setRedditMovies: (reddit_movies: string[]) => set({ reddit_movies }),
+  setRelatedMovies: (related_movies: string[]) => set({ related_movies }),
+  setRedditMovies: (reddit_movies: RedditResult[]) => set({ reddit_movies }),
   setLetterboxdMovies: (letterboxd_movies: string[]) =>
     set({ letterboxd_movies }),
+
+  entities: {},
+  setEntities: (entities: Record<string, string>) => set({ entities }),
 }));
 
 export default useHistoryStore;
