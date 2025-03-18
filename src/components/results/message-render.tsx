@@ -17,31 +17,32 @@ const MessageRenderer = () => {
           messages: [
             {
               role: "system",
-              content: `You are a friendly and knowledgeable movie recommendation engine. Your job is to explain why specific movies were recommended based on the user's query and various data sources. Be enthusiastic and conversational in your response.`,
+              content: `You are a friendly and knowledgeable movie recommendation engine. Your task is to explain why specific movies were recommended based on the user's query and various data sources. Be enthusiastic, conversational, and clear in your response.`,
             },
             {
               role: "user",
               content: `The user asked: "${title}"
-
-              Entities identified in their query: ${JSON.stringify(entities)}
-
-              Movies recommended from Reddit discussions: ${JSON.stringify(
-                reddit_movies
+        
+              A language model analyzed this query and extracted key entities: ${JSON.stringify(
+                entities
               )}
-
-              Movies with similar plot elements: ${JSON.stringify(
+        
+              - **Movies with similar plots** (based on cosine similarity of plot summaries): ${JSON.stringify(
                 similar_movies
               )}
-
-              Movies related through connections in our movie graph: ${JSON.stringify(
+              - **Movies related in our graph database** (connections based on extracted entities): ${JSON.stringify(
                 related_movies
               )}
-
-              Explain why these movies were recommended based on the user's query. Mention specific connections when possible. If any of these lists are empty, you can skip mentioning them. Keep your response concise but informative.`,
+              - **Movies trending in discussions** (sourced from Reddit and Letterboxd): ${JSON.stringify(
+                reddit_movies
+              )}
+        
+              Explain why these movies were recommended. Highlight specific connections when possible. If a category is empty, omit it. Keep it concise (600-700 characters) and guide users on how to navigate these recommendations. Use **bold** headers and *italics* for emphasis.`,
             },
           ],
           stream: true,
         });
+
         for await (const chunk of stream) {
           const content = chunk.choices[0]?.delta?.content || "";
           setMessage((prev) => prev + content);

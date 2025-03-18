@@ -175,14 +175,14 @@ function App() {
           <TabsList className="bg-zinc-200 text-xs">
             <TabsTrigger
               value="natural-language"
-              className="text-xs cursor-pointer data-[state=active]:bg-blue-600 data-[state=active]:text-white data-[state=active]:border-none w-64"
+              className="text-xs cursor-pointer data-[state=active]:bg-blue-600 data-[state=active]:text-white data-[state=active]:border-none w-full min-w-[150px] sm:w-44 md:w-64"
             >
               <LanguageIcon />
               Natural Language
             </TabsTrigger>
             <TabsTrigger
               value="plot-summaries"
-              className="text-xs cursor-pointer data-[state=active]:bg-cyan-600 data-[state=active]:text-white data-[state=active]:border-none w-64"
+              className="text-xs cursor-pointer data-[state=active]:bg-cyan-600 data-[state=active]:text-white data-[state=active]:border-none w-full min-w-[150px] sm:w-44 md:w-64"
             >
               <Pencil />
               Semantic Search

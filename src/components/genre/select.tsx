@@ -83,7 +83,7 @@ const SelectGenre = ({ accentColor = "cyan" }: SelectGenreProps) => {
   const containerClass = useMemo(() => {
     return cn(
       "flex items-center gap-2 border border-stone-300 rounded-xl px-2.5 py-1.5",
-      "text-sm min-w-[300px] max-w-[360px]",
+      "text-sm w-full min-w-[200px] md:min-w-[300px] max-w-[360px]",
       "transition-colors duration-150",
       `focus-within:bg-white relative`,
       "h-9",
