@@ -115,7 +115,7 @@ function App() {
 
   const alternateHomepage = (
     <section className="container mx-auto max-w-[900px] w-[90vw] h-[calc(100vh-9rem)] overflow-y-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
-      <h1 className="text-3xl h-[5rem] z-10 font-bold absolute top-0 left-0 max-w-[900px] translate-x-1/2 w-[90vw] libre-baskerville-regular py-4 text-stone-700">
+      <h1 className="text-2xl md:text-3xl h-[4rem] md:h-[5rem] z-10 font-bold absolute top-0 left-0 right-0 libre-baskerville-regular py-4 text-stone-700 text-center">
         {title}
       </h1>
       <div

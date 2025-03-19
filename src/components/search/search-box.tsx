@@ -65,7 +65,7 @@ const SearchBox = ({
       />
       <main className="h-12 flex items-center justify-between">
         <div className="flex items-center gap-2 text-xs">
-          {/* {type === "natural-language" && (
+          {type === "natural-language" && (
             <>
               <span
                 onClick={() => setReddit((prev) => !prev)}
@@ -86,7 +86,7 @@ const SearchBox = ({
                 <Letterboxd /> Search Letterboxd
               </span>
             </>
-          )} */}
+          )}
         </div>
 
         <button

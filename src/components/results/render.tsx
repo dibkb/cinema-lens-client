@@ -44,11 +44,11 @@ const MoviesRenderer = ({
                 {movies.map((movie) => (
                   <CarouselItem
                     key={movie?.id}
-                    className="sm:basis-1/2 md:basis-1/3 lg:basis-1/6 pl-1 group"
+                    className="basis-1/2 sm:basis-1/3 md:basis-1/4 lg:basis-1/6 pl-1 group"
                   >
-                    <div className="p-1 h-[200px] group-hover:scale-105 transition-all duration-300 relative">
+                    <div className="p-1 min-h-[200px] group-hover:scale-105 transition-all duration-300 relative">
                       <img
-                        src={processImageUrl(movie?.poster_url)}
+                        src={processImageUrl(movie?.poster_url ?? "") || ""}
                         alt={movie?.title}
                         className="w-full h-full object-cover rounded-sm"
                       />

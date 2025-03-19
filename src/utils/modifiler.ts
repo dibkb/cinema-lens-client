@@ -55,5 +55,6 @@ export function stringToJson(inputStr: string) {
 
 export function processImageUrl(url: string) {
   // https://image.tmdb.org/t/p/w400/mbm8k3GFhXS0ROd9AD1gqYbIFbM.jpg
+  if (!url) return null;
   return url.replace("w154", "w400");
 }
