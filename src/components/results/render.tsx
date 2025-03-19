@@ -12,15 +12,16 @@ import {
   CarouselPrevious,
   CarouselNext,
 } from "../ui/carousel";
-import { Movie } from "@/store/history";
 import { genres } from "@/data/genre";
+import { z } from "zod";
+import { moviesResponseSchema } from "@/zod/z";
 
 const MoviesRenderer = ({
   movies,
   title,
   description,
 }: {
-  movies: Movie[];
+  movies: z.infer<typeof moviesResponseSchema>;
   title: string;
   description: string;
   reddit?: boolean;

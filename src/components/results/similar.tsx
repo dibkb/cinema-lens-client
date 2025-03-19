@@ -1,5 +1,5 @@
 import { fetchMoviesByTitle } from "@/axios/fetch";
-import useHistoryStore, { Movie } from "@/store/history";
+import useHistoryStore from "@/store/history";
 import { useEffect, useState } from "react";
 import {
   Carousel,
@@ -10,21 +10,34 @@ import {
 } from "../ui/carousel";
 import { Skeleton } from "../ui/skeleton";
 import MoviesRenderer from "./render";
+import { moviesResponseSchema } from "@/zod/z";
+import { z } from "zod";
 
 const SimilarMovies = () => {
   const { similar_movies } = useHistoryStore();
   const [loading, setLoading] = useState(true);
-  const [movies, setMovies] = useState<Movie[]>([]);
+  const [movies, setMovies] = useState<z.infer<typeof moviesResponseSchema>>(
+    []
+  );
+  const [error, setError] = useState<boolean>(false);
   useEffect(() => {
     setLoading(true);
     async function fetchMovies() {
       if (!similar_movies) return;
       const movies = await fetchMoviesByTitle(similar_movies);
-      setMovies(movies);
+      const parsedMovies = moviesResponseSchema.safeParse(movies);
+      if (parsedMovies.success) {
+        setMovies(parsedMovies.data);
+      } else {
+        setError(true);
+      }
       setLoading(false);
     }
     fetchMovies();
   }, [similar_movies]);
+  if (error) {
+    return;
+  }
   if (loading) {
     return (
       <div className="relative w-full px-4">

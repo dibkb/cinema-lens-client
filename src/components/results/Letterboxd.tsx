@@ -1,5 +1,5 @@
 import { fetchMoviesByTitle } from "@/axios/fetch";
-import useHistoryStore, { Movie } from "@/store/history";
+import useHistoryStore from "@/store/history";
 import { useEffect, useState } from "react";
 import {
   Carousel,
@@ -11,12 +11,16 @@ import {
 import { Skeleton } from "../ui/skeleton";
 
 import MoviesRenderer from "./render";
+import { moviesResponseSchema } from "@/zod/z";
+import { z } from "zod";
 
 const Letterboxd = () => {
   const { letterboxd_movies } = useHistoryStore();
   const [loading, setLoading] = useState(true);
-  const [movies, setMovies] = useState<Movie[]>([]);
-  console.log(letterboxd_movies);
+  const [movies, setMovies] = useState<z.infer<typeof moviesResponseSchema>>(
+    []
+  );
+  const [error, setError] = useState<boolean>(false);
   useEffect(() => {
     setLoading(true);
     async function fetchMovies() {
@@ -42,7 +46,12 @@ const Letterboxd = () => {
           movieTitles.add(movie.title);
           return true;
         });
-        setMovies(uniqueMovies);
+        const parsedMovies = moviesResponseSchema.safeParse(uniqueMovies);
+        if (parsedMovies.success) {
+          setMovies(parsedMovies.data);
+        } else {
+          setError(true);
+        }
       } catch (error) {
         console.error("Error fetching movies:", error);
       } finally {
@@ -51,6 +60,9 @@ const Letterboxd = () => {
     }
     fetchMovies();
   }, [letterboxd_movies]);
+  if (error) {
+    return;
+  }
   if (loading) {
     return (
       <div className="relative w-full px-4">
