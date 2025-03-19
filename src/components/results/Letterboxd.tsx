@@ -42,10 +42,10 @@ const Letterboxd = () => {
           movieResults.flat();
         const filteredMovies = filterMovies(flatMovies, entities);
         const parsedMovies = moviesResponseSchema.safeParse(filteredMovies);
-        if (parsedMovies.success) {
-          setMovies(parsedMovies.data);
-        } else {
+        if (!parsedMovies.success || parsedMovies.data.length === 0) {
           setError(true);
+        } else {
+          setMovies(parsedMovies.data);
         }
       } catch (error) {
         console.error("Error fetching movies:", error);

@@ -28,10 +28,10 @@ const SimilarMovies = () => {
       const movies = await fetchMoviesByTitle(similar_movies);
       const filteredMovies = filterMovies(movies, entities);
       const parsedMovies = moviesResponseSchema.safeParse(filteredMovies);
-      if (parsedMovies.success) {
-        setMovies(parsedMovies.data);
-      } else {
+      if (!parsedMovies.success || parsedMovies.data.length === 0) {
         setError(true);
+      } else {
+        setMovies(parsedMovies.data);
       }
       setLoading(false);
     }
