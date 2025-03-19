@@ -12,9 +12,10 @@ import { Skeleton } from "../ui/skeleton";
 import MoviesRenderer from "./render";
 import { moviesResponseSchema } from "@/zod/z";
 import { z } from "zod";
+import { filterMovies } from "@/utils/modifiler";
 
 const SimilarMovies = () => {
-  const { similar_movies } = useHistoryStore();
+  const { similar_movies, entities } = useHistoryStore();
   const [loading, setLoading] = useState(true);
   const [movies, setMovies] = useState<z.infer<typeof moviesResponseSchema>>(
     []
@@ -25,7 +26,8 @@ const SimilarMovies = () => {
     async function fetchMovies() {
       if (!similar_movies) return;
       const movies = await fetchMoviesByTitle(similar_movies);
-      const parsedMovies = moviesResponseSchema.safeParse(movies);
+      const filteredMovies = filterMovies(movies, entities);
+      const parsedMovies = moviesResponseSchema.safeParse(filteredMovies);
       if (parsedMovies.success) {
         setMovies(parsedMovies.data);
       } else {
@@ -34,7 +36,7 @@ const SimilarMovies = () => {
       setLoading(false);
     }
     fetchMovies();
-  }, [similar_movies]);
+  }, [similar_movies, entities]);
   if (error) {
     return;
   }

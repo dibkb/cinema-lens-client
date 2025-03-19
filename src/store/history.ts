@@ -16,6 +16,19 @@ export interface RedditResult {
   movies: string[];
   site_url: string;
 }
+export interface Entity {
+  movie: string[] | null;
+  actor: string[] | null;
+  director: string[] | null;
+  year_start: number | null;
+  year_end: number | null;
+  genre: string[] | null;
+  actors_union: boolean | null;
+  genres_union: boolean | null;
+  search_query: string;
+  parsing_review: string;
+}
+
 interface HistoryState {
   homepage: boolean;
   setHomepage: (homepage: boolean) => void;
@@ -36,8 +49,8 @@ interface HistoryState {
   title: string;
   setTitle: (title: string) => void;
 
-  entities: Record<string, string>;
-  setEntities: (entities: Record<string, string>) => void;
+  entities: Entity;
+  setEntities: (entities: Entity) => void;
 }
 
 const useHistoryStore = create<HistoryState>((set) => ({
@@ -62,8 +75,19 @@ const useHistoryStore = create<HistoryState>((set) => ({
   setLetterboxdMovies: (letterboxd_movies: RedditResult[]) =>
     set({ letterboxd_movies }),
 
-  entities: {},
-  setEntities: (entities: Record<string, string>) => set({ entities }),
+  entities: {
+    movie: null,
+    actor: null,
+    director: null,
+    year_start: null,
+    year_end: null,
+    genre: null,
+    actors_union: null,
+    genres_union: null,
+    search_query: "",
+    parsing_review: "",
+  },
+  setEntities: (entities: Entity) => set({ entities }),
 }));
 
 export default useHistoryStore;

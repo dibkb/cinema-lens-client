@@ -120,8 +120,8 @@ function App() {
       </h1>
       <div
         className={cn(
-          "flex flex-col gap-1 text-sm text-stone-500 max-h-[400px] overflow-y-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] cutive-mono-regular font-medium",
-          !isStreaming && "hidden"
+          "flex flex-col gap-1 text-sm text-stone-500 max-h-[400px] overflow-y-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] cutive-mono-regular font-medium"
+          // !isStreaming && "hidden"
         )}
       >
         {tempMessages.map((message) => (
@@ -131,7 +131,7 @@ function App() {
       </div>
       {/* Results */}
       <div className="mb-4">
-        {isStreaming === false && <MessageRenderer />}
+        {/* {isStreaming === false && <MessageRenderer />} */}
         {reddit_movies.length > 0 && <RedditMovies />}
         {letterboxd_movies.length > 0 && <Letterboxd />}
         {similar_movies.length > 0 && <SimilarMovies />}

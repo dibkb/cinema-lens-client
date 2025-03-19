@@ -13,8 +13,9 @@ import { Skeleton } from "../ui/skeleton";
 import MoviesRenderer from "./render";
 import { moviesResponseSchema } from "@/zod/z";
 import { z } from "zod";
+import { filterMovies } from "@/utils/modifiler";
 const RedditMovies = () => {
-  const { reddit_movies } = useHistoryStore();
+  const { reddit_movies, entities } = useHistoryStore();
   const [loading, setLoading] = useState(true);
   const [movies, setMovies] = useState<z.infer<typeof moviesResponseSchema>>(
     []
@@ -37,15 +38,8 @@ const RedditMovies = () => {
         // Execute all fetch requests in parallel
         const movieResults = await Promise.all(moviePromises);
         const flatMovies = movieResults.flat();
-        const movieTitles = new Set();
-        const uniqueMovies = flatMovies.filter((movie) => {
-          if (movieTitles.has(movie.title)) {
-            return false;
-          }
-          movieTitles.add(movie.title);
-          return true;
-        });
-        const parsedMovies = moviesResponseSchema.safeParse(uniqueMovies);
+        const filteredMovies = filterMovies(flatMovies, entities);
+        const parsedMovies = moviesResponseSchema.safeParse(filteredMovies);
         if (parsedMovies.success) {
           setMovies(parsedMovies.data);
         } else {
@@ -58,7 +52,7 @@ const RedditMovies = () => {
       }
     }
     fetchMovies();
-  }, [reddit_movies]);
+  }, [reddit_movies, entities]);
   if (error) {
     return;
   }

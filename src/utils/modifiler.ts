@@ -1,3 +1,6 @@
+import { Entity } from "@/store/history";
+import { moviesResponseSchema } from "@/zod/z";
+import { z } from "zod";
 export function stringToJson(inputStr: string) {
   if (!inputStr || typeof inputStr !== "string") {
     return null;
@@ -58,3 +61,59 @@ export function processImageUrl(url: string) {
   if (!url) return null;
   return url.replace("w154", "w400");
 }
+
+export const filterMovies = (
+  flatMovies: z.infer<typeof moviesResponseSchema>,
+  entities: Entity
+) => {
+  const movieTitles = new Set();
+  const uniqueMovies = flatMovies.filter((movie) => {
+    // filter genres
+
+    if (entities.genre && entities.genre.length > 0) {
+      const movieGenres = movie.genres.map((genre) => genre.toLowerCase());
+
+      if (entities.genres_union) {
+        // OR condition - movie should have at least one of the requested genres
+        const hasAnyGenre = entities.genre.some((genre) =>
+          movieGenres.includes(genre.toLowerCase())
+        );
+        if (!hasAnyGenre) return false;
+      } else {
+        // AND condition - movie should have all requested genres
+        const hasAllGenres = entities.genre.every((genre) =>
+          movieGenres.includes(genre.toLowerCase())
+        );
+        if (!hasAllGenres) return false;
+      }
+    }
+    // handle actor condition
+    if (entities.actor && entities.actor.length > 0) {
+      const movieActors = movie.actors.map((actor) => actor.toLowerCase());
+      const hasAnyActor = entities.actor.some((actor) =>
+        movieActors.includes(actor.toLowerCase())
+      );
+      if (!hasAnyActor) return false;
+
+      if (entities.actors_union) {
+        const hasAllActors = entities.actor.every((actor) =>
+          movieActors.includes(actor.toLowerCase())
+        );
+        if (!hasAllActors) return false;
+      } else {
+        const hasAnyActor = entities.actor.some((actor) =>
+          movieActors.includes(actor.toLowerCase())
+        );
+        if (!hasAnyActor) return false;
+      }
+    }
+
+    // Handle duplicate titles
+    if (movieTitles.has(movie.title)) {
+      return false;
+    }
+    movieTitles.add(movie.title);
+    return true;
+  });
+  return uniqueMovies;
+};
