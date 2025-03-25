@@ -4,15 +4,19 @@ import Summary from "./components/tabs/summary";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "./components/ui/tabs";
 import LanguageIcon from "./icons/language";
 import Pencil from "./icons/pencil";
-import { useQueryState } from "nuqs";
+import {
+  parseAsArrayOf,
+  parseAsBoolean,
+  parseAsInteger,
+  useQueryState,
+} from "nuqs";
 import { useEffect, useRef, useState } from "react";
 import useHistoryStore from "./store/history";
 import { cn } from "./lib/utils";
-import SimilarMovies from "./components/results/similar";
-import RelatedMovies from "./components/results/related";
-import MessageRenderer from "./components/results/message-render";
-import RedditMovies from "./components/results/RedditMovies";
-import Letterboxd from "./components/results/Letterboxd";
+import Search from "./pages/search";
+import { baseURL } from "./axios/base";
+import { getGenres } from "./utils/year";
+import { processYear } from "./utils/year";
 
 function App() {
   const [type, setType] = useQueryState("type", {
@@ -21,6 +25,16 @@ function App() {
   const [query, setQuery] = useQueryState("query", {
     defaultValue: "",
   });
+  const [reddit] = useQueryState("reddit", parseAsBoolean.withDefault(false));
+  const [letterboxd] = useQueryState(
+    "letterboxd",
+    parseAsBoolean.withDefault(false)
+  );
+  const [genresSelected] = useQueryState(
+    "selected",
+    parseAsArrayOf(parseAsInteger)
+  );
+  const [yearsSelected] = useQueryState("year", parseAsArrayOf(parseAsInteger));
 
   const [isStreaming, setIsStreaming] = useState(false);
   const eventSourceRef = useRef<EventSource | null>(null);
@@ -32,21 +46,17 @@ function App() {
     clearTempMessages,
     setTitle,
     title,
-    similar_movies,
-    related_movies,
     setSimilarMovies,
     setRelatedMovies,
     setRedditMovies,
     setLetterboxdMovies,
     setEntities,
-    letterboxd_movies,
-    reddit_movies,
   } = useHistoryStore();
-  const messagesEndRef = useRef<HTMLDivElement>(null);
+  const searchMessagesEndRef = useRef<HTMLDivElement>(null);
 
   // Scroll to bottom whenever tempUpdate changes
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    searchMessagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [tempMessages]);
 
   // Cleanup on component unmount
@@ -80,8 +90,13 @@ function App() {
     }
 
     // Initialize new SSE connection
+    const years = yearsSelected ? processYear(yearsSelected) : null;
     eventSourceRef.current = new EventSource(
-      `http://localhost:8000/stream-response?query=${query}`
+      `${baseURL}/stream-response?query=${encodeURIComponent(
+        query
+      )}&reddit=${reddit}&letterboxd=${letterboxd}&genres=${getGenres(
+        genresSelected
+      )?.join(",")}&min_year=${years?.minYear}&max_year=${years?.maxYear}`
     );
 
     // Handle incoming data
@@ -118,27 +133,12 @@ function App() {
       <h1 className="text-2xl md:text-3xl h-[4rem] md:h-[5rem] z-10 font-bold absolute top-0 left-0 right-0 libre-baskerville-regular py-4 text-stone-700 text-center">
         {title}
       </h1>
-      <div
-        className={cn(
-          "flex flex-col gap-1 text-sm text-stone-500 max-h-[400px] overflow-y-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] cutive-mono-regular font-medium"
-          // !isStreaming && "hidden"
-        )}
-      >
-        {tempMessages.map((message) => (
-          <div key={message}>{message}</div>
-        ))}
-        <div ref={messagesEndRef} />
-      </div>
-      {/* Results */}
-      <div className="mb-4">
-        {/* {isStreaming === false && <MessageRenderer />} */}
-        {reddit_movies.length > 0 && <RedditMovies />}
-        {letterboxd_movies.length > 0 && <Letterboxd />}
-        {similar_movies.length > 0 && <SimilarMovies />}
-        {related_movies.length > 0 && <RelatedMovies />}
-
-        <span className="h-[180px] w-full bg-white flex"></span>
-      </div>
+      {type === "natural-language" && (
+        <Search
+          searchMessagesEndRef={searchMessagesEndRef}
+          isStreaming={isStreaming}
+        />
+      )}
     </section>
   );
 
@@ -196,6 +196,7 @@ function App() {
           </TabsContent>
         </Tabs>
         <SearchBox
+          isStreaming={isStreaming}
           type={type}
           className={""}
           handleSubmit={handleSubmit}

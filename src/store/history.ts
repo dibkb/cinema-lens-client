@@ -1,5 +1,5 @@
 import { create } from "zustand";
-
+import { persist, createJSONStorage } from "zustand/middleware";
 export interface Movie {
   actors: string[];
   director: string[];
@@ -51,43 +51,72 @@ interface HistoryState {
 
   entities: Entity;
   setEntities: (entities: Entity) => void;
+
+  aiMessage: string;
+  setAiMessage: (aiMessage: string) => void;
+  updateAiMessage: (aiMessage: string) => void;
 }
 
-const useHistoryStore = create<HistoryState>((set) => ({
-  homepage: true,
-  setHomepage: (homepage: boolean) => set({ homepage }),
-  tempMessages: [],
-  updateTempMessages: (message: string) =>
-    set((state) => ({ tempMessages: [...state.tempMessages, message] })),
-  clearTempMessages: () => set({ tempMessages: [] }),
+const useHistoryStore = create<HistoryState>()(
+  persist(
+    (set) => ({
+      homepage: true,
+      setHomepage: (homepage: boolean) => set({ homepage }),
+      tempMessages: [],
+      updateTempMessages: (message: string) =>
+        set((state) => ({ tempMessages: [...state.tempMessages, message] })),
+      clearTempMessages: () => set({ tempMessages: [] }),
 
-  title: "",
-  setTitle: (title: string) => set({ title }),
+      aiMessage: "",
+      setAiMessage: (aiMessage: string) => set({ aiMessage }),
+      updateAiMessage: (aiMessage: string) =>
+        set((state) => ({ aiMessage: state.aiMessage + aiMessage })),
 
-  similar_movies: [],
-  related_movies: [],
-  reddit_movies: [],
-  letterboxd_movies: [],
+      title: "",
+      setTitle: (title: string) => set({ title }),
 
-  setSimilarMovies: (similar_movies: string[]) => set({ similar_movies }),
-  setRelatedMovies: (related_movies: string[]) => set({ related_movies }),
-  setRedditMovies: (reddit_movies: RedditResult[]) => set({ reddit_movies }),
-  setLetterboxdMovies: (letterboxd_movies: RedditResult[]) =>
-    set({ letterboxd_movies }),
+      similar_movies: [],
+      related_movies: [],
+      reddit_movies: [],
+      letterboxd_movies: [],
 
-  entities: {
-    movie: null,
-    actor: null,
-    director: null,
-    year_start: null,
-    year_end: null,
-    genre: null,
-    actors_union: null,
-    genres_union: null,
-    search_query: "",
-    parsing_review: "",
-  },
-  setEntities: (entities: Entity) => set({ entities }),
-}));
+      setSimilarMovies: (similar_movies: string[]) => set({ similar_movies }),
+      setRelatedMovies: (related_movies: string[]) => set({ related_movies }),
+      setRedditMovies: (reddit_movies: RedditResult[]) =>
+        set({ reddit_movies }),
+      setLetterboxdMovies: (letterboxd_movies: RedditResult[]) =>
+        set({ letterboxd_movies }),
+
+      entities: {
+        movie: null,
+        actor: null,
+        director: null,
+        year_start: null,
+        year_end: null,
+        genre: null,
+        actors_union: null,
+        genres_union: null,
+        search_query: "",
+        parsing_review: "",
+      },
+      setEntities: (entities: Entity) => set({ entities }),
+    }),
+    {
+      name: "history",
+      partialize: (state) => ({
+        homepage: state.homepage,
+        title: state.title,
+        entities: state.entities,
+        tempMessages: state.tempMessages,
+        similar_movies: state.similar_movies,
+        related_movies: state.related_movies,
+        reddit_movies: state.reddit_movies,
+        letterboxd_movies: state.letterboxd_movies,
+        aiMessage: state.aiMessage,
+      }),
+      storage: createJSONStorage(() => sessionStorage),
+    }
+  )
+);
 
 export default useHistoryStore;

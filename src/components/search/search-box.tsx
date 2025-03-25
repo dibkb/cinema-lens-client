@@ -11,6 +11,7 @@ const SearchBox = ({
   query,
   setQuery,
   className,
+  isStreaming,
 }: {
   type?: string;
   homepage?: boolean;
@@ -18,6 +19,7 @@ const SearchBox = ({
   query: string;
   setQuery: (query: string) => void;
   className?: string;
+  isStreaming: boolean;
 }) => {
   const [reddit, setReddit] = useQueryState(
     "reddit",
@@ -90,7 +92,7 @@ const SearchBox = ({
         </div>
 
         <button
-          onClick={handleSubmit}
+          onClick={isStreaming ? undefined : handleSubmit}
           className={cn(
             "w-9 h-9 rounded-full flex items-center justify-center",
             "transition-colors cursor-pointer",
@@ -98,7 +100,11 @@ const SearchBox = ({
             copy?.color === "cyan" && "bg-cyan-600 hover:bg-cyan-700"
           )}
         >
-          <UpArrow className="text-white" />
+          {isStreaming ? (
+            <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+          ) : (
+            <UpArrow className="text-white" />
+          )}
         </button>
       </main>
     </div>
