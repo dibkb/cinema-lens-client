@@ -1,4 +1,5 @@
 import { fetchMoviesByTitle } from "@/axios/fetch";
+import { Skeleton } from "@/components/ui/skeleton";
 
 import { genres } from "@/data/genre";
 import { cn } from "@/lib/utils";
@@ -49,6 +50,24 @@ const PlotSummary = ({
     }
     fetchMovies();
   }, [plot_summaries]);
+  if (error) {
+    return;
+  }
+
+  if (loading) {
+    return (
+      <>
+        {Array.from({ length: 3 }).map((_, index) => (
+          <div key={index} className="md:basis-1/2 lg:basis-1/3 pl-4">
+            <div className="p-1">
+              <Skeleton className="h-[200px] w-full rounded aspect-square" />
+            </div>
+          </div>
+        ))}
+      </>
+    );
+  }
+
   return (
     <>
       <div
