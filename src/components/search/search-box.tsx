@@ -7,7 +7,8 @@ import { useMemo } from "react";
 
 const SearchBox = ({
   type,
-  handleSubmit,
+  handleSubmitSearch,
+  handleSubmitSemantic,
   query,
   setQuery,
   className,
@@ -15,7 +16,8 @@ const SearchBox = ({
 }: {
   type?: string;
   homepage?: boolean;
-  handleSubmit: () => void;
+  handleSubmitSearch: () => void;
+  handleSubmitSemantic: () => void;
   query: string;
   setQuery: (query: string) => void;
   className?: string;
@@ -29,6 +31,13 @@ const SearchBox = ({
     "letterboxd",
     parseAsBoolean.withDefault(false)
   );
+  const handleSubmit = () => {
+    if (type === "natural-language") {
+      handleSubmitSearch();
+    } else {
+      handleSubmitSemantic();
+    }
+  };
 
   const copy = useMemo(() => {
     if (type === "natural-language") {

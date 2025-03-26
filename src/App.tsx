@@ -68,7 +68,7 @@ function App() {
     };
   }, []);
 
-  const handleSubmit = () => {
+  const handleSubmitSearch = () => {
     // updateSearchHistory(query)
 
     setSimilarMovies([]);
@@ -126,6 +126,10 @@ function App() {
       // clearTempMessages();
       eventSourceRef.current = null;
     };
+  };
+
+  const handleSubmitSemantic = () => {
+    console.log("handleSubmitSemantic");
   };
 
   const alternateHomepage = (
@@ -199,7 +203,8 @@ function App() {
           isStreaming={isStreaming}
           type={type}
           className={""}
-          handleSubmit={handleSubmit}
+          handleSubmitSearch={handleSubmitSearch}
+          handleSubmitSemantic={handleSubmitSemantic}
           query={query}
           setQuery={setQuery}
         />
