@@ -11,9 +11,13 @@ import useHistoryStore from "@/store/history";
 
 interface SelectGenreProps {
   accentColor?: AccentColor;
+  invisible?: boolean;
 }
 
-const DateRange = ({ accentColor = "cyan" }: SelectGenreProps) => {
+const DateRange = ({
+  accentColor = "cyan",
+  invisible = false,
+}: SelectGenreProps) => {
   const { homepage } = useHistoryStore();
   const [input, setInput] = useQueryState("date", { defaultValue: "" });
   const [selected, setSelected] = useQueryState(
@@ -95,7 +99,7 @@ const DateRange = ({ accentColor = "cyan" }: SelectGenreProps) => {
   }, [accentColor, selected]);
   return (
     <div
-      className={containerClass}
+      className={cn(containerClass, invisible && "invisible")}
       tabIndex={0}
       onFocus={() => setIsFocused(true)}
       onBlur={(e) => {

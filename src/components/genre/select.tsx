@@ -9,9 +9,13 @@ import { useQueryState, parseAsInteger, parseAsArrayOf } from "nuqs";
 import useHistoryStore from "@/store/history";
 interface SelectGenreProps {
   accentColor?: AccentColor;
+  invisible?: boolean;
 }
 
-const SelectGenre = ({ accentColor = "cyan" }: SelectGenreProps) => {
+const SelectGenre = ({
+  accentColor = "cyan",
+  invisible = false,
+}: SelectGenreProps) => {
   const [input, setInput] = useQueryState("genre", { defaultValue: "" });
   const [selected, setSelected] = useQueryState(
     "selected",
@@ -65,7 +69,7 @@ const SelectGenre = ({ accentColor = "cyan" }: SelectGenreProps) => {
   );
   const previewItem = genres.filter((item) => selected?.includes(item.id));
   const preview = previewItem.length > 0 && (
-    <div className="flex items-center gap-1.5">
+    <div className={cn("flex items-center gap-1.5", invisible && "invisible")}>
       <p
         className={cn(
           "px-2 py-0.5 rounded-md text-xs font-medium",
@@ -93,7 +97,7 @@ const SelectGenre = ({ accentColor = "cyan" }: SelectGenreProps) => {
   }, [accentColor, selected]);
   return (
     <div
-      className={containerClass}
+      className={cn(containerClass, invisible && "invisible")}
       tabIndex={0}
       onFocus={() => setIsFocused(true)}
       onBlur={(e) => {

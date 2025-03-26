@@ -40,9 +40,11 @@ interface HistoryState {
   related_movies: string[];
   reddit_movies: RedditResult[];
   letterboxd_movies: RedditResult[];
+  plot_summaries: string[];
 
   setSimilarMovies: (similar_movies: string[]) => void;
   setRelatedMovies: (related_movies: string[]) => void;
+  setPlotSummaries: (plot_summaries: string[]) => void;
   setRedditMovies: (reddit_movies: RedditResult[]) => void;
   setLetterboxdMovies: (letterboxd_movies: RedditResult[]) => void;
 
@@ -79,6 +81,8 @@ const useHistoryStore = create<HistoryState>()(
       related_movies: [],
       reddit_movies: [],
       letterboxd_movies: [],
+      plot_summaries: [],
+      setPlotSummaries: (plot_summaries: string[]) => set({ plot_summaries }),
 
       setSimilarMovies: (similar_movies: string[]) => set({ similar_movies }),
       setRelatedMovies: (related_movies: string[]) => set({ related_movies }),
@@ -113,6 +117,7 @@ const useHistoryStore = create<HistoryState>()(
         reddit_movies: state.reddit_movies,
         letterboxd_movies: state.letterboxd_movies,
         aiMessage: state.aiMessage,
+        plot_summaries: state.plot_summaries,
       }),
       storage: createJSONStorage(() => sessionStorage),
     }

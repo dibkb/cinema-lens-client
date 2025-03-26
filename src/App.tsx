@@ -17,6 +17,7 @@ import Search from "./pages/search";
 import { baseURL } from "./axios/base";
 import { getGenres } from "./utils/year";
 import { processYear } from "./utils/year";
+import PlotSummary from "./pages/summary";
 
 function App() {
   const [type, setType] = useQueryState("type", {
@@ -51,12 +52,14 @@ function App() {
     setRedditMovies,
     setLetterboxdMovies,
     setEntities,
+    setPlotSummaries,
   } = useHistoryStore();
   const searchMessagesEndRef = useRef<HTMLDivElement>(null);
-
+  const summaryMessagesEndRef = useRef<HTMLDivElement>(null);
   // Scroll to bottom whenever tempUpdate changes
   useEffect(() => {
     searchMessagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    summaryMessagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [tempMessages]);
 
   // Cleanup on component unmount
@@ -129,7 +132,33 @@ function App() {
   };
 
   const handleSubmitSemantic = () => {
-    console.log("handleSubmitSemantic");
+    setQuery("");
+    clearTempMessages();
+
+    setPlotSummaries([]);
+
+    setIsStreaming(true);
+
+    eventSourceRef.current = new EventSource(
+      `${baseURL}/stream-response-summary?query=${encodeURIComponent(query)}`
+    );
+
+    eventSourceRef.current.onmessage = (event) => {
+      if (event.data.startsWith("xx--data")) {
+        const [key, value] = event.data.split("xx--data--")[1].split("--");
+
+        if (key === "similar_movies") {
+          setPlotSummaries(JSON.parse(value));
+        }
+      }
+      updateTempMessages(event.data);
+    };
+
+    eventSourceRef.current.onerror = () => {
+      eventSourceRef.current?.close();
+      setIsStreaming(false);
+      eventSourceRef.current = null;
+    };
   };
 
   const alternateHomepage = (
@@ -140,6 +169,12 @@ function App() {
       {type === "natural-language" && (
         <Search
           searchMessagesEndRef={searchMessagesEndRef}
+          isStreaming={isStreaming}
+        />
+      )}
+      {type === "plot-summaries" && (
+        <PlotSummary
+          searchMessagesEndRef={summaryMessagesEndRef}
           isStreaming={isStreaming}
         />
       )}
