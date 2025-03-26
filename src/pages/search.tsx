@@ -1,5 +1,4 @@
 import Letterboxd from "@/components/results/Letterboxd";
-import MessageRenderer from "@/components/results/message-render";
 import RedditMovies from "@/components/results/RedditMovies";
 import RelatedMovies from "@/components/results/related";
 import SimilarMovies from "@/components/results/similar";

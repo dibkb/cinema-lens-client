@@ -133,8 +133,10 @@ function App() {
 
   const handleSubmitSemantic = () => {
     setQuery("");
-    clearTempMessages();
 
+    setTitle(query);
+
+    clearTempMessages();
     setPlotSummaries([]);
 
     setIsStreaming(true);
@@ -163,8 +165,8 @@ function App() {
 
   const alternateHomepage = (
     <section className="container mx-auto max-w-[900px] w-[90vw] h-[calc(100vh-9rem)] overflow-y-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
-      <h1 className="text-2xl md:text-3xl h-[4rem] md:h-[5rem] z-10 font-bold absolute top-0 left-0 right-0 libre-baskerville-regular py-4 text-stone-700 text-center">
-        {title}
+      <h1 className="text-2xl md:text-3xl h-[4rem] md:h-[5rem] z-10 font-bold absolute top-0 left-0 right-0 libre-baskerville-regular py-4 text-stone-700 text-center line-clamp-1 truncate">
+        {title.length > 50 ? title.substring(0, 50) + "..." : title}
       </h1>
       {type === "natural-language" && (
         <Search
