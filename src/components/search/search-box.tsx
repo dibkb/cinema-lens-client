@@ -50,7 +50,7 @@ const SearchBox = ({
     } else if (type === "plot-summaries") {
       return {
         placeholder:
-          "Type your movie plot here… e.g., 'A scientist perfects time travel but accidentally strands himself in a dystopian future where history has been rewritten. Hunted by a ruthless regime that wants his technology, he must find his way back while uncovering the horrifying consequences of his own invention—and deciding whether to undo everything he’s created'",
+          "Type your movie plot here… e.g., 'A scientist perfects time travel but accidentally strands himself in a dystopian future where history has been rewritten. Hunted by a ruthless regime that wants his technology...'",
         color: "cyan",
       };
     }
