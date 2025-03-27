@@ -71,38 +71,38 @@ export const filterMovies = (
     // filter genres
 
     if (entities.genre && entities.genre.length > 0) {
-      const movieGenres = movie.genres.map((genre) => genre.toLowerCase());
+      const movieGenres = movie.genres?.map((genre) => genre.toLowerCase());
 
       if (entities.genres_union) {
         // OR condition - movie should have at least one of the requested genres
         const hasAnyGenre = entities.genre.some((genre) =>
-          movieGenres.includes(genre.toLowerCase())
+          movieGenres?.includes(genre.toLowerCase())
         );
         if (!hasAnyGenre) return false;
       } else {
         // AND condition - movie should have all requested genres
         const hasAllGenres = entities.genre.every((genre) =>
-          movieGenres.includes(genre.toLowerCase())
+          movieGenres?.includes(genre.toLowerCase())
         );
         if (!hasAllGenres) return false;
       }
     }
     // handle actor condition
     if (entities.actor && entities.actor.length > 0) {
-      const movieActors = movie.actors.map((actor) => actor.toLowerCase());
+      const movieActors = movie?.actors?.map((actor) => actor.toLowerCase());
       const hasAnyActor = entities.actor.some((actor) =>
-        movieActors.includes(actor.toLowerCase())
+        movieActors?.includes(actor.toLowerCase())
       );
       if (!hasAnyActor) return false;
 
       if (entities.actors_union) {
         const hasAllActors = entities.actor.every((actor) =>
-          movieActors.includes(actor.toLowerCase())
+          movieActors?.includes(actor.toLowerCase())
         );
         if (!hasAllActors) return false;
       } else {
         const hasAnyActor = entities.actor.some((actor) =>
-          movieActors.includes(actor.toLowerCase())
+          movieActors?.includes(actor.toLowerCase())
         );
         if (!hasAnyActor) return false;
       }

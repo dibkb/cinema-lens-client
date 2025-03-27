@@ -1,4 +1,5 @@
 import Letterboxd from "@/components/results/Letterboxd";
+import MessageRenderer from "@/components/results/message-render";
 import RedditMovies from "@/components/results/RedditMovies";
 import RelatedMovies from "@/components/results/related";
 import SimilarMovies from "@/components/results/similar";
@@ -22,8 +23,8 @@ const Search = ({
     <>
       <div
         className={cn(
-          "flex flex-col gap-1 text-sm text-stone-500 max-h-[400px] overflow-y-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] cutive-mono-regular font-medium"
-          //   !isStreaming && "hidden"
+          "flex flex-col gap-1 text-sm text-stone-500 max-h-[400px] overflow-y-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] cutive-mono-regular font-medium",
+          !isStreaming && "hidden"
         )}
       >
         {tempMessages.map((message) => (
@@ -32,7 +33,7 @@ const Search = ({
         <div ref={searchMessagesEndRef} />
       </div>
       <div className="mb-4">
-        {/* {isStreaming === false && <MessageRenderer />} */}
+        {isStreaming === false && <MessageRenderer />}
         {reddit_movies.length > 0 && <RedditMovies />}
         {letterboxd_movies.length > 0 && <Letterboxd />}
         {similar_movies.length > 0 && <SimilarMovies />}

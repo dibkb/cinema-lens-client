@@ -2,7 +2,7 @@ import Letterboxd from "@/icons/letterboxd";
 import Reddit from "@/icons/reddit";
 import UpArrow from "@/icons/up-arrow";
 import { cn } from "@/lib/utils";
-import { WandSparkles } from "lucide-react";
+// import { WandSparkles } from "lucide-react";
 import { parseAsBoolean, useQueryState } from "nuqs";
 import { useMemo } from "react";
 
@@ -101,7 +101,7 @@ const SearchBox = ({
           )}
         </div>
         <div className="flex items-center gap-2">
-          {type === "plot-summaries" && !isStreaming && query && (
+          {/* {type === "plot-summaries" && !isStreaming && query && (
             <button
               onClick={isStreaming ? undefined : handleSubmit}
               className={cn(
@@ -113,7 +113,7 @@ const SearchBox = ({
               Tidy up
               <WandSparkles className="text-zinc-500 size-4" />
             </button>
-          )}
+          )} */}
 
           <button
             onClick={isStreaming ? undefined : handleSubmit}
