@@ -53,6 +53,7 @@ const RedditMovies = () => {
     }
     fetchMovies();
   }, [reddit_movies, entities]);
+  console.log(movies);
   if (error) {
     return;
   }

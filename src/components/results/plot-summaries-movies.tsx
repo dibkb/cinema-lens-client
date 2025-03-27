@@ -70,7 +70,7 @@ const PlotSummariesMovies = () => {
           <div className="p-1 min-h-[200px] group-hover:scale-105 transition-all duration-300 relative">
             <img
               src={processImageUrl(movie?.poster_url ?? "") || ""}
-              alt={movie?.title}
+              alt={movie?.title ?? "Missing title"}
               className="w-full h-full object-cover rounded-sm"
             />
             <div className="absolute inset-0 bg-black/80 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-center items-center p-3 text-white rounded-sm">
