@@ -32,7 +32,11 @@ const SearchBox = ({
     "letterboxd",
     parseAsBoolean.withDefault(false)
   );
-  const handleSubmit = () => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (isStreaming) {
+      return;
+    }
     if (type === "natural-language") {
       handleSubmitSearch();
     } else {
@@ -57,7 +61,14 @@ const SearchBox = ({
   }, [type]);
 
   return (
-    <div
+    <form
+      onSubmit={handleSubmit}
+      onKeyDown={(e) => {
+        if (e.key === "Enter") {
+          e.preventDefault();
+          handleSubmit(e);
+        }
+      }}
       className={cn(
         "rounded-lg w-[900px] max-w-[90vw] px-4 py-2 flex flex-col bg-zinc-50 border border-zinc-200",
         className
@@ -116,7 +127,7 @@ const SearchBox = ({
           )} */}
 
           <button
-            onClick={isStreaming ? undefined : handleSubmit}
+            type="submit"
             className={cn(
               "w-9 h-9 rounded-full flex items-center justify-center",
               "transition-colors cursor-pointer",
@@ -132,7 +143,7 @@ const SearchBox = ({
           </button>
         </div>
       </main>
-    </div>
+    </form>
   );
 };
 
