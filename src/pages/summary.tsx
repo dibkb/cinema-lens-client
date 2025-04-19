@@ -26,6 +26,11 @@ const PlotSummary = ({
 
       <div className="mb-4 p-4">
         {/* {isStreaming === false && <MessageRenderer />} */}
+        {plot_summaries.length === 0 && !isStreaming && (
+          <p className="text-sm text-stone-600 mb-4">
+            No movies found for your query
+          </p>
+        )}
         {plot_summaries.length ? <PlotSummariesMovies /> : ""}
         <span className="h-[180px] w-full bg-white flex"></span>
       </div>
