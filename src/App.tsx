@@ -139,6 +139,8 @@ function App() {
     clearTempMessages();
     setPlotSummaries([]);
 
+    setHomepage(false);
+
     setIsStreaming(true);
 
     eventSourceRef.current = new EventSource(
