@@ -44,6 +44,13 @@ const PlotSummariesMovies = () => {
     }
     fetchMovies();
   }, [plot_summaries]);
+  if (plot_summaries.length === 0) {
+    return (
+      <p className="text-sm text-stone-600 mb-4">
+        No movies found for your query
+      </p>
+    );
+  }
   if (error) {
     return;
   }
